@@ -7,6 +7,8 @@ import { getTypeOrmConfig } from './config/typeorm.config';
 import { UsersModule } from './core/users/users.module';
 import { AuthModule } from './core/auth/auth.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { CrewMembersModule } from './core/crew-members/crew-members.module';
+import { ShipsModule } from './core/ships/ships.module';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
     }),
     UsersModule,
     AuthModule,
+    CrewMembersModule,
+    ShipsModule,
   ],
   controllers: [AppController],
   providers: [
