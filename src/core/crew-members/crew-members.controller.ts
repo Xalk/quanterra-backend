@@ -1,10 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { CrewMembersService } from './crew-members.service';
 import { CreateCrewMemberDto } from './dto/create-crew-member.dto';
 import { UpdateCrewMemberDto } from './dto/update-crew-member.dto';
 import { JwtAuthGuard } from '@/common/guard/jwt-auth.guard';
+import { Roles } from '@/common/decorators/roles.decorator';
+import { Role } from '@/common/enums/role.enum';
+import { RoleGuard } from '@/common/guard/role.guard';
 
 @Controller('crew-members')
+@UseGuards(RoleGuard)
 @UseGuards(JwtAuthGuard)
 export class CrewMembersController {
   constructor(private readonly crewMembersService: CrewMembersService) {}
@@ -15,7 +19,9 @@ export class CrewMembersController {
     return this.crewMembersService.create(createCrewMemberDto);
   }
 
+
   @Get()
+  @Roles(Role.CREW_MEMBER)
   findAll() {
     return this.crewMembersService.findAll();
   }

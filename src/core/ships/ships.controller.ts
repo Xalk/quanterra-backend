@@ -1,9 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { ShipsService } from './ships.service';
 import { CreateShipDto } from './dto/create-ship.dto';
 import { UpdateShipDto } from './dto/update-ship.dto';
+import { RoleGuard } from '@/common/guard/role.guard';
+import { JwtAuthGuard } from '@/common/guard/jwt-auth.guard';
 
 @Controller('ships')
+@UseGuards(RoleGuard)
+@UseGuards(JwtAuthGuard)
 export class ShipsController {
   constructor(private readonly shipsService: ShipsService) {}
 
