@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCrewMemberDto } from './dto/create-crew-member.dto';
 import { UpdateCrewMemberDto } from './dto/update-crew-member.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -26,15 +26,34 @@ export class CrewMembersService {
     return this.repo.find({ relations: ['user', 'ship'] });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} crewMember`;
+  async findOne(id: number) {
+    const crewMember = await this.repo.findOne({ where: { id } });
+
+    if (!crewMember) {
+      throw new NotFoundException('Crew member not found');
+    }
+    return this.repo.findOne({ where: { id }, relations: ['user', 'ship'] });
   }
 
-  update(id: number, updateCrewMemberDto: UpdateCrewMemberDto) {
-    return `This action updates a #${id} crewMember`;
+  async update(id: number, updateCrewMemberDto: UpdateCrewMemberDto) {
+    const crewMember = await this.repo.findOne({ where: { id } });
+
+    if (!crewMember) {
+      throw new NotFoundException('Crew member not found');
+    }
+
+    Object.assign(crewMember, updateCrewMemberDto);
+
+    return this.repo.save(crewMember);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} crewMember`;
+  async remove(id: number) {
+    const crewMember = await this.repo.findOne({ where: { id } });
+
+    if (!crewMember) {
+      throw new NotFoundException('Crew member not found');
+    }
+
+    return this.repo.remove(crewMember);
   }
 }
