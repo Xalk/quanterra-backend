@@ -8,8 +8,8 @@ import { Role } from '@/common/enums/role.enum';
 import { RoleGuard } from '@/common/guard/role.guard';
 
 @Controller('crew-members')
-@UseGuards(RoleGuard)
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RoleGuard)
+@Roles(Role.ADMIN)
 export class CrewMembersController {
   constructor(private readonly crewMembersService: CrewMembersService) {}
 

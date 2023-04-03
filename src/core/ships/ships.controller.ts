@@ -4,10 +4,12 @@ import { CreateShipDto } from './dto/create-ship.dto';
 import { UpdateShipDto } from './dto/update-ship.dto';
 import { RoleGuard } from '@/common/guard/role.guard';
 import { JwtAuthGuard } from '@/common/guard/jwt-auth.guard';
+import { Roles } from '@/common/decorators/roles.decorator';
+import { Role } from '@/common/enums/role.enum';
 
 @Controller('ships')
-@UseGuards(RoleGuard)
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RoleGuard)
+@Roles(Role.ADMIN)
 export class ShipsController {
   constructor(private readonly shipsService: ShipsService) {}
 
@@ -17,6 +19,7 @@ export class ShipsController {
   }
 
   @Get()
+  @Roles(Role.CREW_MEMBER)
   findAll() {
     return this.shipsService.findAll();
   }

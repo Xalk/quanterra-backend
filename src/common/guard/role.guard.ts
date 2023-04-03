@@ -4,10 +4,14 @@ import { Role } from '@/common/enums/role.enum';
 
 @Injectable()
 export class RoleGuard implements CanActivate {
-  constructor(private reflector: Reflector) {}
+  constructor(private reflector: Reflector) {
+  }
 
   canActivate(context: ExecutionContext): boolean {
-    const roles = this.reflector.get<Role[]>('roles', context.getHandler());
+    const roles = this.reflector.getAllAndOverride<Role[]>('roles',
+      [
+        context.getHandler(), context.getClass(),
+      ]);
     if (!roles) {
       // No roles defined, access is granted by default
       return true;
