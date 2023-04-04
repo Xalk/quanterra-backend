@@ -12,6 +12,7 @@ import { ShipsModule } from './core/ships/ships.module';
 import { StorageTankModule } from './core/storage-tank/storage-tank.module';
 import { WastesModule } from './core/wastes/wastes.module';
 import { CollectionRecordsModule } from './core/collection-records/collection-records.module';
+import { SensorsModule } from './core/sensors/sensors.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { CollectionRecordsModule } from './core/collection-records/collection-re
     StorageTankModule,
     WastesModule,
     CollectionRecordsModule,
+    SensorsModule,
   ],
   controllers: [AppController],
   providers: [
