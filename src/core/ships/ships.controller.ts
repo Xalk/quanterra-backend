@@ -19,7 +19,7 @@ export class ShipsController {
   }
 
   @Get()
-  @Roles(Role.CREW_MEMBER)
+  @Roles(Role.CREW_MEMBER, Role.ADMIN)
   findAll() {
     return this.shipsService.findAll();
   }

@@ -23,7 +23,7 @@ export class CrewMembersService {
 
   findAll() {
 
-    return this.repo.find({ relations: ['user', 'ship'] });
+    return this.repo.find();
   }
 
   async findOne(id: number) {
@@ -42,9 +42,12 @@ export class CrewMembersService {
       throw new NotFoundException('Crew member not found');
     }
 
-    Object.assign(crewMember, updateCrewMemberDto);
+    // Object.assign(crewMember, updateCrewMemberDto);
 
-    return this.repo.save(crewMember);
+    return this.repo.save({
+      ...crewMember,
+      ...updateCrewMemberDto
+    });
   }
 
   async remove(id: number) {

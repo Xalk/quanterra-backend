@@ -9,6 +9,9 @@ import { AuthModule } from './core/auth/auth.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { CrewMembersModule } from './core/crew-members/crew-members.module';
 import { ShipsModule } from './core/ships/ships.module';
+import { StorageTankModule } from './core/storage-tank/storage-tank.module';
+import { WastesModule } from './core/wastes/wastes.module';
+import { CollectionRecordsModule } from './core/collection-records/collection-records.module';
 
 @Module({
   imports: [
@@ -22,6 +25,9 @@ import { ShipsModule } from './core/ships/ships.module';
     AuthModule,
     CrewMembersModule,
     ShipsModule,
+    StorageTankModule,
+    WastesModule,
+    CollectionRecordsModule,
   ],
   controllers: [AppController],
   providers: [

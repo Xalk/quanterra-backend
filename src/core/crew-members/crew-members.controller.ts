@@ -21,7 +21,7 @@ export class CrewMembersController {
 
 
   @Get()
-  @Roles(Role.CREW_MEMBER)
+  @Roles(Role.CREW_MEMBER, Role.ADMIN)
   findAll() {
     return this.crewMembersService.findAll();
   }

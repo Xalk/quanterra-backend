@@ -18,7 +18,11 @@ export class ShipsService {
   }
 
   findAll() {
-    return this.repo.find();
+    return this.repo.find({
+      relations: {
+        crewMember: { user: true }, storageTanks: true,
+      },
+    });
   }
 
   async findOne(id: number) {

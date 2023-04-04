@@ -8,13 +8,13 @@ export class CrewMember extends CustomBaseEntity {
 
 
   @ManyToOne(() => User, user => user.crewMember)
-  // @JoinColumn({ name: 'user_id' })
+  @JoinColumn({ name: 'user_id' })
   user: User;
 
   @ManyToOne(() => Ship, ship => ship.crewMember)
-  // @JoinColumn({ name: 'ship_id' })
+  @JoinColumn({ name: 'ship_id' })
   ship: Ship;
 
   @Column()
-  desc: string
+  desc: string;
 }
