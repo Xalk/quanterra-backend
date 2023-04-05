@@ -7,11 +7,13 @@ import { Roles } from '@/common/decorators/roles.decorator';
 import { Role } from '@/common/enums/role.enum';
 import { RoleGuard } from '@/common/guard/role.guard';
 
+
 @Controller('crew-members')
 @UseGuards(JwtAuthGuard, RoleGuard)
-@Roles(Role.ADMIN)
+@Roles(Role.OPERATOR, Role.ADMIN)
 export class CrewMembersController {
-  constructor(private readonly crewMembersService: CrewMembersService) {}
+  constructor(private readonly crewMembersService: CrewMembersService) {
+  }
 
 
   @Post()
@@ -21,12 +23,11 @@ export class CrewMembersController {
 
 
   @Get()
-  @Roles(Role.CREW_MEMBER, Role.ADMIN)
   findAll() {
     return this.crewMembersService.findAll();
   }
 
-  @Get(':id')
+  @Get('by-id/:id')
   findOne(@Param('id') id: string) {
     return this.crewMembersService.findOne(+id);
   }
@@ -40,4 +41,5 @@ export class CrewMembersController {
   remove(@Param('id') id: string) {
     return this.crewMembersService.remove(+id);
   }
+
 }

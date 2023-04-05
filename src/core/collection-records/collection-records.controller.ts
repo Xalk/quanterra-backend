@@ -4,9 +4,12 @@ import { CreateCollectionRecordDto } from './dto/create-collection-record.dto';
 import { UpdateCollectionRecordDto } from './dto/update-collection-record.dto';
 import { JwtAuthGuard } from '@/common/guard/jwt-auth.guard';
 import { RoleGuard } from '@/common/guard/role.guard';
+import { Roles } from '@/common/decorators/roles.decorator';
+import { Role } from '@/common/enums/role.enum';
 
 @Controller('collection-records')
 @UseGuards(JwtAuthGuard, RoleGuard)
+@Roles(Role.ADMIN)
 export class CollectionRecordsController {
   constructor(private readonly collectionRecordsService: CollectionRecordsService) {}
 

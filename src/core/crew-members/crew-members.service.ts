@@ -46,7 +46,7 @@ export class CrewMembersService {
 
     return this.repo.save({
       ...crewMember,
-      ...updateCrewMemberDto
+      ...updateCrewMemberDto,
     });
   }
 
@@ -59,4 +59,16 @@ export class CrewMembersService {
 
     return this.repo.remove(crewMember);
   }
+
+  async findByUserId(userId: number) {
+
+    const crewMember = await this.repo.findOne({ where: { user: { id: userId } }, relations: ['user'] });
+
+    if (!crewMember) {
+      throw new NotFoundException('User is not a crew member');
+    }
+
+    return crewMember
+  }
+
 }

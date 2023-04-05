@@ -6,12 +6,15 @@ import { RoleGuard } from '@/common/guard/role.guard';
 import { JwtAuthGuard } from '@/common/guard/jwt-auth.guard';
 import { Roles } from '@/common/decorators/roles.decorator';
 import { Role } from '@/common/enums/role.enum';
+import { CurrentUser } from '@/common/decorators/current-user.decorator';
+import { User } from '@/core/users/entities/user.entity';
 
 @Controller('ships')
 @UseGuards(JwtAuthGuard, RoleGuard)
-@Roles(Role.ADMIN)
+@Roles(Role.OPERATOR, Role.ADMIN)
 export class ShipsController {
-  constructor(private readonly shipsService: ShipsService) {}
+  constructor(private readonly shipsService: ShipsService) {
+  }
 
   @Post()
   create(@Body() createShipDto: CreateShipDto) {
@@ -19,12 +22,11 @@ export class ShipsController {
   }
 
   @Get()
-  @Roles(Role.CREW_MEMBER, Role.ADMIN)
   findAll() {
     return this.shipsService.findAll();
   }
 
-  @Get(':id')
+  @Get('by-id/:id')
   findOne(@Param('id') id: string) {
     return this.shipsService.findOne(+id);
   }
@@ -38,4 +40,12 @@ export class ShipsController {
   remove(@Param('id') id: string) {
     return this.shipsService.remove(+id);
   }
+
+  @Get('/by-user-id')
+  @Roles(Role.OPERATOR, Role.ADMIN)
+  getShipsByUserId(@CurrentUser() user: User) {
+    return this.shipsService.getShipsByUserId(user.id);
+  }
+
+
 }

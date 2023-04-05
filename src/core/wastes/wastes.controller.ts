@@ -4,9 +4,12 @@ import { CreateWasteDto } from './dto/create-waste.dto';
 import { UpdateWasteDto } from './dto/update-waste.dto';
 import { JwtAuthGuard } from '@/common/guard/jwt-auth.guard';
 import { RoleGuard } from '@/common/guard/role.guard';
+import { Roles } from '@/common/decorators/roles.decorator';
+import { Role } from '@/common/enums/role.enum';
 
 @Controller('wastes')
 @UseGuards(JwtAuthGuard, RoleGuard)
+@Roles(Role.ADMIN)
 export class WastesController {
   constructor(private readonly wastesService: WastesService) {
   }

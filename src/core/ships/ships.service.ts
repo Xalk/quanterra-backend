@@ -4,11 +4,14 @@ import { UpdateShipDto } from './dto/update-ship.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Ship } from '@/core/ships/entities/ship.entity';
+import { CrewMembersService } from '@/core/crew-members/crew-members.service';
 
 @Injectable()
 export class ShipsService {
 
-  constructor(@InjectRepository(Ship) private repo: Repository<Ship>) {
+  constructor(
+    @InjectRepository(Ship) private repo: Repository<Ship>,
+    private readonly crewMemberService: CrewMembersService) {
   }
 
 
@@ -68,5 +71,18 @@ export class ShipsService {
     }
     const total = ship.storageTanks.reduce((acc, tank) => acc + tank.capacity, 0);
     return total;
+  }
+
+
+  async getShipsByUserId(userId: number) {
+
+    const crewMember = await this.crewMemberService.findByUserId(userId);
+
+    return await this.repo.find({
+      where: { crewMember: { user: { id: crewMember.user.id } } },
+      relations: {
+        crewMember: { user: true }, storageTanks: true,
+      },
+    });
   }
 }
