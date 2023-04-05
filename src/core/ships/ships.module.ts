@@ -7,6 +7,7 @@ import { Ship } from '@/core/ships/entities/ship.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([Ship])],
   controllers: [ShipsController],
-  providers: [ShipsService]
+  providers: [ShipsService],
+  exports: [ShipsService]
 })
 export class ShipsModule {}

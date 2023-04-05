@@ -15,7 +15,7 @@ export class AuthHelper {
   }
 
   // Decoding the JWT Token
-  public async decode(token: string): Promise<unknown> {
+  public async decode(token: string) {
     return this.jwt.decode(token, null);
   }
 

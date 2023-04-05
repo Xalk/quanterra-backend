@@ -1,4 +1,4 @@
-import { ClassSerializerInterceptor, Module } from '@nestjs/common';
+import { ClassSerializerInterceptor, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -14,15 +14,28 @@ import { WastesModule } from './core/wastes/wastes.module';
 import { CollectionRecordsModule } from './core/collection-records/collection-records.module';
 import { SensorsModule } from './core/sensors/sensors.module';
 import { SensorRecordsModule } from './core/sensor-records/sensor-records.module';
+import { ReportsModule } from './core/reports/reports.module';
+import { UserLogsModule } from './core/user-logs/user-logs.module';
+import { UserLogsMiddleware } from '@/common/middleware/user.logger.middleware';
+import { AuthHelper } from '@/common/helper/auth.helper';
+import { JwtModule } from '@nestjs/jwt';
+import { User } from '@/core/users/entities/user.entity';
+import { getJwtConfig } from '@/config/jwt.config';
 
 @Module({
   imports: [
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: getJwtConfig,
+    }),
     ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: getTypeOrmConfig,
     }),
+    TypeOrmModule.forFeature([User]),
     UsersModule,
     AuthModule,
     CrewMembersModule,
@@ -32,9 +45,12 @@ import { SensorRecordsModule } from './core/sensor-records/sensor-records.module
     CollectionRecordsModule,
     SensorsModule,
     SensorRecordsModule,
+    ReportsModule,
+    UserLogsModule,
   ],
   controllers: [AppController],
   providers: [
+    AuthHelper,
     AppService,
     {
       provide: APP_INTERCEPTOR,
@@ -42,5 +58,8 @@ import { SensorRecordsModule } from './core/sensor-records/sensor-records.module
     },
   ],
 })
-export class AppModule {
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(UserLogsMiddleware).forRoutes('*');
+  }
 }

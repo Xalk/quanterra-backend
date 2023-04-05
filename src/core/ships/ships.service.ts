@@ -31,7 +31,11 @@ export class ShipsService {
     if (!ship) {
       throw new NotFoundException('Ship not found');
     }
-    return this.repo.findOne({ where: { id } });
+    return this.repo.findOne({
+      where: { id }, relations: {
+        crewMember: { user: true }, storageTanks: true,
+      },
+    });
   }
 
   async update(id: number, updateShipDto: UpdateShipDto) {
@@ -54,5 +58,15 @@ export class ShipsService {
     }
 
     return this.repo.remove(ship);
+  }
+
+  async calcTotalCapacity(shipId: number) {
+    const ship = await this.repo.findOne({ where: { id: shipId }, relations: ['storageTanks'] });
+
+    if (!ship) {
+      throw new NotFoundException('Ship not found');
+    }
+    const total = ship.storageTanks.reduce((acc, tank) => acc + tank.capacity, 0);
+    return total;
   }
 }

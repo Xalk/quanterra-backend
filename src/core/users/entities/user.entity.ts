@@ -3,6 +3,8 @@ import { Column, Entity, OneToMany } from 'typeorm';
 import { Role } from '@/common/enums/role.enum';
 import { Exclude } from 'class-transformer';
 import { CrewMember } from '@/core/crew-members/entities/crew-member.entity';
+import { Report } from '@/core/reports/entities/report.entity';
+import { UserLog } from '@/core/user-logs/entities/user-log.entity';
 
 
 @Entity()
@@ -26,4 +28,10 @@ export class User extends CustomBaseEntity {
 
   @OneToMany(type=> CrewMember, crewMember => crewMember.user)
   crewMember: CrewMember[]
+
+  @OneToMany(type=> Report, report => report.user)
+  reports: Report[]
+
+  @OneToMany(type=> UserLog, userLog => userLog.user)
+  userLogs: UserLog[]
 }
