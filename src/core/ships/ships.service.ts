@@ -5,13 +5,18 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Ship } from '@/core/ships/entities/ship.entity';
 import { CrewMembersService } from '@/core/crew-members/crew-members.service';
+import { CreateAndAssignUserDto } from '@/core/ships/dto/create-and-assign-user.dto';
+import { AuthService } from '@/core/auth/auth.service';
+import { Role } from '@/common/enums/role.enum';
 
 @Injectable()
 export class ShipsService {
 
   constructor(
     @InjectRepository(Ship) private repo: Repository<Ship>,
-    private readonly crewMemberService: CrewMembersService) {
+    private readonly crewMemberService: CrewMembersService,
+    private readonly authService: AuthService,
+  ) {
   }
 
 
@@ -73,7 +78,6 @@ export class ShipsService {
     return total;
   }
 
-
   async getShipsByUserId(userId: number) {
 
     const crewMember = await this.crewMemberService.findByUserId(userId);
@@ -84,5 +88,22 @@ export class ShipsService {
         crewMember: { user: true }, storageTanks: true,
       },
     });
+  }
+
+  async createUserAndAssignCrewToShip(createAndAssignUserDto: CreateAndAssignUserDto, id: number) {
+
+    createAndAssignUserDto.password = Math.random().toString(36).slice(-8);
+
+    const dto = { ...createAndAssignUserDto, role: Role.CREW_MEMBER };
+    const user = await this.authService.register(dto);
+
+
+    const crewMember = await this.crewMemberService.create({
+      userId: user.id,
+      shipId: id,
+      desc: 'auto',
+    });
+
+    return this.crewMemberService.findOne(crewMember.id);
   }
 }

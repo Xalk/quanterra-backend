@@ -9,7 +9,7 @@ import { Role } from '@/common/enums/role.enum';
 
 @Controller('storage-tank')
 @UseGuards(JwtAuthGuard, RoleGuard)
-@Roles(Role.ADMIN)
+@Roles(Role.ADMIN, Role.OPERATOR)
 export class StorageTankController {
   constructor(private readonly storageTankService: StorageTankService) {}
 

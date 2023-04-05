@@ -8,6 +8,7 @@ import { Roles } from '@/common/decorators/roles.decorator';
 import { Role } from '@/common/enums/role.enum';
 import { CurrentUser } from '@/common/decorators/current-user.decorator';
 import { User } from '@/core/users/entities/user.entity';
+import { CreateAndAssignUserDto } from '@/core/ships/dto/create-and-assign-user.dto';
 
 @Controller('ships')
 @UseGuards(JwtAuthGuard, RoleGuard)
@@ -42,9 +43,13 @@ export class ShipsController {
   }
 
   @Get('/by-user-id')
-  @Roles(Role.OPERATOR, Role.ADMIN)
   getShipsByUserId(@CurrentUser() user: User) {
     return this.shipsService.getShipsByUserId(user.id);
+  }
+
+  @Post(':id/crew')
+  assignUser(@Param('id') id: string, @Body() createAndAssignUserDto: CreateAndAssignUserDto) {
+    return this.shipsService.createUserAndAssignCrewToShip(createAndAssignUserDto, +id);
   }
 
 

@@ -1,4 +1,4 @@
-import { IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateCrewMemberDto {
 
@@ -9,5 +9,6 @@ export class CreateCrewMemberDto {
   shipId: number;
 
   @IsString()
+  @IsOptional()
   desc: string
 }

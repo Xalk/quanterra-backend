@@ -16,25 +16,31 @@ export class AuthService {
   @Inject(AuthHelper)
   private readonly helper: AuthHelper;
 
-   async register(body: RegisterDto): Promise<User | never> {
-    const { firstName, lastName, email, password }: RegisterDto = body;
-    let user: User = await this.repo.findOne({ where: { email } });
+  async register(body: RegisterDto): Promise<User | never> {
+    let { firstName, lastName, email, password, role }: RegisterDto = body;
 
-    if (user) {
-      throw new HttpException('Conflict', HttpStatus.CONFLICT);
+    let user: User;
+
+    if (email) {
+      user = await this.repo.findOne({ where: { email } });
+      if (user) {
+        throw new HttpException('Email already in use', HttpStatus.CONFLICT);
+      }
+
     }
 
     user = new User();
 
     user.firstName = firstName;
     user.lastName = lastName;
+    user.role = role;
     user.email = email;
     user.password = this.helper.encodePassword(password);
 
     return this.repo.save(user);
   }
 
-   async login(body: LoginDto) {
+  async login(body: LoginDto) {
     const { email, password }: LoginDto = body;
     const user: User = await this.repo.findOne({ where: { email } });
 
@@ -54,7 +60,7 @@ export class AuthService {
     };
   }
 
-   async refresh(user: User): Promise<string> {
+  async refresh(user: User): Promise<string> {
     return this.helper.generateToken(user);
   }
 
@@ -70,5 +76,6 @@ export class AuthService {
 
     return this.repo.save(user);
   }
+
 
 }

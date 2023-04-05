@@ -16,22 +16,22 @@ export class User extends CustomBaseEntity {
   @Column()
   lastName: string;
 
-  @Column({unique: true})
+  @Column({ unique: true, nullable: true })
   email: string;
 
   @Exclude()
   @Column()
   password: string;
 
-  @Column({default: Role.ADMIN})
-  role: Role
+  @Column({ default: Role.ADMIN })
+  role: Role;
 
-  @OneToMany(type=> CrewMember, crewMember => crewMember.user)
-  crewMember: CrewMember[]
+  @OneToMany(type => CrewMember, crewMember => crewMember.user)
+  crewMember: CrewMember[];
 
-  @OneToMany(type=> Report, report => report.user)
-  reports: Report[]
+  @OneToMany(type => Report, report => report.user)
+  reports: Report[];
 
-  @OneToMany(type=> UserLog, userLog => userLog.user)
-  userLogs: UserLog[]
+  @OneToMany(type => UserLog, userLog => userLog.user)
+  userLogs: UserLog[];
 }
