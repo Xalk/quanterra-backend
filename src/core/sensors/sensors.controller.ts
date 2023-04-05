@@ -5,7 +5,8 @@ import { UpdateSensorDto } from './dto/update-sensor.dto';
 
 @Controller('sensors')
 export class SensorsController {
-  constructor(private readonly sensorsService: SensorsService) {}
+  constructor(private readonly sensorsService: SensorsService) {
+  }
 
   @Post()
   create(@Body() createSensorDto: CreateSensorDto) {
@@ -27,4 +28,5 @@ export class SensorsController {
   remove(@Param('id') id: string) {
     return this.sensorsService.remove(+id);
   }
+
 }
