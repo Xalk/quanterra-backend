@@ -13,6 +13,7 @@ import { StorageTankModule } from './core/storage-tank/storage-tank.module';
 import { WastesModule } from './core/wastes/wastes.module';
 import { CollectionRecordsModule } from './core/collection-records/collection-records.module';
 import { SensorsModule } from './core/sensors/sensors.module';
+import { SensorRecordsModule } from './core/sensor-records/sensor-records.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { SensorsModule } from './core/sensors/sensors.module';
     WastesModule,
     CollectionRecordsModule,
     SensorsModule,
+    SensorRecordsModule,
   ],
   controllers: [AppController],
   providers: [

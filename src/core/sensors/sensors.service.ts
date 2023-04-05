@@ -17,7 +17,7 @@ export class SensorsService {
   }
 
   findAll() {
-    return this.sensorRepository.find();
+    return this.sensorRepository.find({ relations: ['sensorRecords'] });
   }
 
 
