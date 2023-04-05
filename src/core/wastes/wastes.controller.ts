@@ -1,9 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { WastesService } from './wastes.service';
 import { CreateWasteDto } from './dto/create-waste.dto';
 import { UpdateWasteDto } from './dto/update-waste.dto';
+import { JwtAuthGuard } from '@/common/guard/jwt-auth.guard';
+import { RoleGuard } from '@/common/guard/role.guard';
 
 @Controller('wastes')
+@UseGuards(JwtAuthGuard, RoleGuard)
 export class WastesController {
   constructor(private readonly wastesService: WastesService) {
   }

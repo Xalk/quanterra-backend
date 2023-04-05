@@ -7,10 +7,11 @@ import { AuthHelper } from '@/common/helper/auth.helper';
 export class UserLogsMiddleware implements NestMiddleware {
   constructor(
     private readonly userLogsService: UserLogsService,
-    private authHelper: AuthHelper
-  ) {}
+    private authHelper: AuthHelper,
+  ) {
+  }
 
-  async use(req: Request & { user: {id: number} }, res: Response, next: NextFunction) {
+  async use(req: Request & { user: { id: number } }, res: Response, next: NextFunction) {
 
     const authHeader = req.headers.authorization;
     if (!authHeader) {
@@ -19,13 +20,17 @@ export class UserLogsMiddleware implements NestMiddleware {
 
     const token = authHeader.split(' ')[1];
     const decodedToken = await this.authHelper.decode(token) as { id: number };
-    const userId = decodedToken.id ;
+
+    if (!decodedToken) {
+      return next();
+    }
+
+    const userId = decodedToken.id;
 
     const route = req.baseUrl + req.path;
     const method = req.method;
 
-    await this.userLogsService.create({userId, route, method, isAutomated: true});
-
+    await this.userLogsService.create({ userId, route, method, isAutomated: true });
 
 
     next();

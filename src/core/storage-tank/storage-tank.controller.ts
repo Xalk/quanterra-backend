@@ -1,9 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { StorageTankService } from './storage-tank.service';
 import { CreateStorageTankDto } from './dto/create-storage-tank.dto';
 import { UpdateStorageTankDto } from './dto/update-storage-tank.dto';
+import { JwtAuthGuard } from '@/common/guard/jwt-auth.guard';
+import { RoleGuard } from '@/common/guard/role.guard';
 
 @Controller('storage-tank')
+@UseGuards(JwtAuthGuard, RoleGuard)
 export class StorageTankController {
   constructor(private readonly storageTankService: StorageTankService) {}
 

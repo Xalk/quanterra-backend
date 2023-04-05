@@ -1,9 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { CollectionRecordsService } from './collection-records.service';
 import { CreateCollectionRecordDto } from './dto/create-collection-record.dto';
 import { UpdateCollectionRecordDto } from './dto/update-collection-record.dto';
+import { JwtAuthGuard } from '@/common/guard/jwt-auth.guard';
+import { RoleGuard } from '@/common/guard/role.guard';
 
 @Controller('collection-records')
+@UseGuards(JwtAuthGuard, RoleGuard)
 export class CollectionRecordsController {
   constructor(private readonly collectionRecordsService: CollectionRecordsService) {}
 
