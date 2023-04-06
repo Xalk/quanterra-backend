@@ -1,8 +1,9 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm';
 import { Ship } from '@/core/ships/entities/ship.entity';
 import { CustomBaseEntity } from '@/common/entity/custom-base.entity';
 import { Waste } from '@/core/wastes/entities/waste.entity';
 import { CollectionRecord } from '@/core/collection-records/entities/collection-record.entity';
+import { Sensor } from '@/core/sensors/entities/sensor.entity';
 
 @Entity()
 export class StorageTank extends CustomBaseEntity {
@@ -24,9 +25,10 @@ export class StorageTank extends CustomBaseEntity {
   @JoinColumn({ name: 'waste_id' })
   waste: Waste;
 
-  // @OneToOne(() => Sensor, sensor => sensor.storageTank)
-  // sensor: Sensor
+  @OneToOne(() => Sensor, sensor => sensor.storageTank)
+  @JoinColumn({ name: 'sensor_id' })
+  sensor: Sensor
 
-  @OneToOne(() => CollectionRecord, collectionRecord => collectionRecord.storageTank)
-  collectionRecord: CollectionRecord;
+  @OneToMany(() => CollectionRecord, collectionRecord => collectionRecord.storageTank)
+  collectionRecords: CollectionRecord[];
 }

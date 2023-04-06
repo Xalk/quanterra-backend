@@ -1,4 +1,4 @@
-import { IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateStorageTankDto {
 
@@ -16,4 +16,8 @@ export class CreateStorageTankDto {
 
   @IsNumber()
   wasteId: number;
+
+  @IsNumber()
+  @IsOptional()
+  sensorId: number;
 }

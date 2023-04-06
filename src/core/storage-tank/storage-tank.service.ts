@@ -6,6 +6,7 @@ import { StorageTank } from '@/core/storage-tank/entities/storage-tank.entity';
 import { Repository } from 'typeorm';
 import { Ship } from '@/core/ships/entities/ship.entity';
 import { Waste } from '@/core/wastes/entities/waste.entity';
+import { Sensor } from '@/core/sensors/entities/sensor.entity';
 
 @Injectable()
 export class StorageTankService {
@@ -17,6 +18,8 @@ export class StorageTankService {
     const storageTank = this.repo.create(createStorageTankDto);
     storageTank.ship = { id: createStorageTankDto.shipId } as Ship;
     storageTank.waste = { id: createStorageTankDto.wasteId } as Waste;
+    storageTank.sensor = { id: createStorageTankDto.sensorId } as Sensor;
+
     return this.repo.save(storageTank);
   }
 
@@ -30,7 +33,10 @@ export class StorageTankService {
     if (!storageTank) {
       throw new NotFoundException('Storage tank not found');
     }
-    return this.repo.findOne({ where: { id } });
+    return this.repo.findOne({
+      where: { id },
+      relations: ['ship', 'waste', 'collectionRecords', 'sensor'],
+    });
   }
 
   async update(id: number, updateStorageTankDto: UpdateStorageTankDto) {
@@ -41,6 +47,8 @@ export class StorageTankService {
     }
 
     Object.assign(storageTank, updateStorageTankDto);
+
+    storageTank.sensor = { id: updateStorageTankDto.sensorId } as Sensor;
 
     return this.repo.save(storageTank);
   }
