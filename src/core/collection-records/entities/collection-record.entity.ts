@@ -8,6 +8,12 @@ export class CollectionRecord extends CustomBaseEntity {
   @Column()
   description: string;
 
+  @Column()
+  treatedAmount: number;
+
+  @Column()
+  unit: string;
+
   @ManyToOne(type => StorageTank, storageTank => storageTank.collectionRecords)
   @JoinColumn({ name: 'storage_tank_id' })
   storageTank: StorageTank;

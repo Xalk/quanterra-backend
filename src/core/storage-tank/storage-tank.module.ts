@@ -7,6 +7,7 @@ import { StorageTank } from '@/core/storage-tank/entities/storage-tank.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([StorageTank])],
   controllers: [StorageTankController],
-  providers: [StorageTankService]
+  providers: [StorageTankService],
+  exports: [StorageTankService],
 })
 export class StorageTankModule {}

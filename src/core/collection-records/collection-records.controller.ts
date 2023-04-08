@@ -23,7 +23,7 @@ export class CollectionRecordsController {
     return this.collectionRecordsService.findAll();
   }
 
-  @Get(':id')
+  @Get('by-id/:id')
   findOne(@Param('id') id: string) {
     return this.collectionRecordsService.findOne(+id);
   }
@@ -36,5 +36,10 @@ export class CollectionRecordsController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.collectionRecordsService.remove(+id);
+  }
+
+@Get('/average-amounts')
+  getAverageAmounts() {
+    return this.collectionRecordsService.getAvgByMonth()
   }
 }

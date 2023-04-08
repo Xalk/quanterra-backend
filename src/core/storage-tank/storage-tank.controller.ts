@@ -11,7 +11,8 @@ import { Role } from '@/common/enums/role.enum';
 @UseGuards(JwtAuthGuard, RoleGuard)
 @Roles(Role.ADMIN, Role.OPERATOR)
 export class StorageTankController {
-  constructor(private readonly storageTankService: StorageTankService) {}
+  constructor(private readonly storageTankService: StorageTankService) {
+  }
 
   @Post()
   create(@Body() createStorageTankDto: CreateStorageTankDto) {
@@ -37,4 +38,7 @@ export class StorageTankController {
   remove(@Param('id') id: string) {
     return this.storageTankService.remove(+id);
   }
+
+
+
 }

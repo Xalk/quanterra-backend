@@ -41,7 +41,8 @@ export class ShipsService {
     }
     return this.repo.findOne({
       where: { id }, relations: {
-        crewMember: { user: true }, storageTanks: true,
+        crewMember: { user: true },
+        storageTanks: { waste: true, sensor: true, collectionRecords: true },
       },
     });
   }
