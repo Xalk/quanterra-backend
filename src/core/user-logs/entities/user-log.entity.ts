@@ -5,8 +5,6 @@ import { User } from '@/core/users/entities/user.entity';
 @Entity()
 export class UserLog extends CustomBaseEntity{
 
-  @Column()
-  isAutomated: boolean;
 
   @Column({nullable: true})
   method: string;
@@ -14,8 +12,6 @@ export class UserLog extends CustomBaseEntity{
   @Column({nullable: true})
   route: string;
 
-  @Column({nullable: true})
-  action: string;
 
   @ManyToOne(() => User, user => user.userLogs)
   @JoinColumn({name: 'user_id'})

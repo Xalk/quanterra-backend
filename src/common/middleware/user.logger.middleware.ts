@@ -30,7 +30,7 @@ export class UserLogsMiddleware implements NestMiddleware {
     const route = req.baseUrl + req.path;
     const method = req.method;
 
-    await this.userLogsService.create({ userId, route, method, isAutomated: true });
+    await this.userLogsService.create({ userId, route, method});
 
 
     next();

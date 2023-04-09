@@ -13,14 +13,14 @@ export class UserLogsService {
   }
 
   async create(createUserLogDto: CreateUserLogDto) {
-      const userLog = this.repo.create(createUserLogDto);
-      userLog.user = {id: createUserLogDto.userId} as User
-      return this.repo.save(userLog);
+    const userLog = this.repo.create(createUserLogDto);
+    userLog.user = { id: createUserLogDto.userId } as User;
+    return this.repo.save(userLog);
 
   }
 
   findAll() {
-    return this.repo.find();
+    return this.repo.find({ relations: ['user'] });
   }
 
 }
