@@ -23,11 +23,13 @@ export class ShipsController {
   }
 
   @Get()
+  @Roles(Role.ADMIN, Role.OPERATOR, Role.CREW_MEMBER)
   findAll() {
     return this.shipsService.findAll();
   }
 
   @Get('by-id/:id')
+  @Roles(Role.ADMIN, Role.OPERATOR, Role.CREW_MEMBER)
   findOne(@Param('id') id: string) {
     return this.shipsService.findOne(+id);
   }
@@ -43,6 +45,7 @@ export class ShipsController {
   }
 
   @Get('/by-user-id')
+  @Roles(Role.ADMIN, Role.OPERATOR, Role.CREW_MEMBER)
   getShipsByUserId(@CurrentUser() user: User) {
     return this.shipsService.getShipsByUserId(user.id);
   }

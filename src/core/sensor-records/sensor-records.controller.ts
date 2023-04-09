@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body} from '@nestjs/common';
 import { SensorRecordsService } from './sensor-records.service';
 import { CreateSensorRecordDto } from './dto/create-sensor-record.dto';
-import { UpdateSensorRecordDto } from './dto/update-sensor-record.dto';
+
 
 @Controller('sensor-records')
 export class SensorRecordsController {

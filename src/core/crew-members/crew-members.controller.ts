@@ -6,7 +6,6 @@ import { JwtAuthGuard } from '@/common/guard/jwt-auth.guard';
 import { Roles } from '@/common/decorators/roles.decorator';
 import { Role } from '@/common/enums/role.enum';
 import { RoleGuard } from '@/common/guard/role.guard';
-import { CreateAndAssignUserDto } from '@/core/ships/dto/create-and-assign-user.dto';
 
 
 @Controller('crew-members')

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { CollectionRecordsService } from './collection-records.service';
 import { CreateCollectionRecordDto } from './dto/create-collection-record.dto';
 import { UpdateCollectionRecordDto } from './dto/update-collection-record.dto';
@@ -9,7 +9,7 @@ import { Role } from '@/common/enums/role.enum';
 
 @Controller('collection-records')
 @UseGuards(JwtAuthGuard, RoleGuard)
-@Roles(Role.ADMIN)
+@Roles(Role.ADMIN, Role.OPERATOR, Role.CREW_MEMBER)
 export class CollectionRecordsController {
   constructor(private readonly collectionRecordsService: CollectionRecordsService) {}
 
