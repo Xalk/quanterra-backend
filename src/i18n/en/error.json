@@ -1,0 +1,26 @@
+{
+  "SHIP": {
+    "NOT_FOUND": "Ship not found"
+  },
+  "WASTE": {
+    "NOT_FOUND": "Waste not found"
+  },
+  "USER": {
+    "NOT_FOUND": "User not found",
+    "EMAIL_ALREADY_IN_USE": "Email already in use",
+    "INVALID_LOGIN_CREDENTIALS": "Invalid login credentials"
+  },
+  "STORAGE_TANK": {
+    "NOT_FOUND": "Storage tank not found"
+  },
+  "SENSOR": {
+    "NOT_FOUND": "Sensor not found"
+  },
+  "CREW_MEMBER": {
+    "NOT_FOUND": "Crew member not found",
+    "NOT_CREW_MEMBER": "User is not a crew member"
+  },
+  "RECORD": {
+    "NOT_FOUND": "Record member not found"
+  }
+}

@@ -4,6 +4,8 @@ import { UpdateWasteDto } from './dto/update-waste.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Waste } from '@/core/wastes/entities/waste.entity';
 import { Repository } from 'typeorm';
+import { I18nRequestScopeService } from 'nestjs-i18n';
+
 
 
 @Injectable()
@@ -11,6 +13,7 @@ export class WastesService {
 
   constructor(
     @InjectRepository(Waste) private wasteRepository: Repository<Waste>,
+    private readonly i18n: I18nRequestScopeService,
   ) {
   }
 
@@ -27,7 +30,8 @@ export class WastesService {
     const waste = await this.wasteRepository.findOne({ where: { id } });
 
     if (!waste) {
-      throw new NotFoundException('Waste not found');
+      const errorMessage = this.i18n.translate('error.WASTE.NOT_FOUND' );
+      throw new NotFoundException(errorMessage);
     }
     return waste;
   }

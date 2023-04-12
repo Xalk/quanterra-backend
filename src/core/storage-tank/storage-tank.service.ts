@@ -7,11 +7,14 @@ import { Repository } from 'typeorm';
 import { Ship } from '@/core/ships/entities/ship.entity';
 import { Waste } from '@/core/wastes/entities/waste.entity';
 import { Sensor } from '@/core/sensors/entities/sensor.entity';
+import { I18nRequestScopeService } from 'nestjs-i18n';
 
 @Injectable()
 export class StorageTankService {
 
-  constructor(@InjectRepository(StorageTank) private repo: Repository<StorageTank>) {
+  constructor(@InjectRepository(StorageTank) private repo: Repository<StorageTank>,
+  private readonly i18n: I18nRequestScopeService
+  ) {
   }
 
   create(createStorageTankDto: CreateStorageTankDto) {
@@ -34,9 +37,10 @@ export class StorageTankService {
     });
 
     if (!storageTank) {
-      throw new NotFoundException('Storage tank not found');
+      const errorMessage = this.i18n.translate('error.STORAGE_TANK.NOT_FOUND' );
+      throw new NotFoundException(errorMessage);
     }
-    return storageTank;
+    return storageTank
   }
 
   async update(id: number, updateStorageTankDto: UpdateStorageTankDto) {

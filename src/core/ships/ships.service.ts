@@ -8,6 +8,7 @@ import { CrewMembersService } from '@/core/crew-members/crew-members.service';
 import { CreateAndAssignUserDto } from '@/core/ships/dto/create-and-assign-user.dto';
 import { AuthService } from '@/core/auth/auth.service';
 import { Role } from '@/common/enums/role.enum';
+import { I18nRequestScopeService } from 'nestjs-i18n';
 
 @Injectable()
 export class ShipsService {
@@ -16,8 +17,11 @@ export class ShipsService {
     @InjectRepository(Ship) private repo: Repository<Ship>,
     private readonly crewMemberService: CrewMembersService,
     private readonly authService: AuthService,
+    private readonly i18n: I18nRequestScopeService,
   ) {
+
   }
+
 
 
   create(createShipDto: CreateShipDto) {
@@ -34,17 +38,17 @@ export class ShipsService {
   }
 
   async findOne(id: number) {
-    const ship = await this.repo.findOne({ where: { id } });
-
-    if (!ship) {
-      throw new NotFoundException('Ship not found');
-    }
-    return this.repo.findOne({
-      where: { id }, relations: {
+    const ship = await this.repo.findOne({ where: { id }, relations: {
         crewMember: { user: true },
         storageTanks: { waste: true, sensor: true, collectionRecords: true },
-      },
-    });
+      }});
+
+
+    if (!ship) {
+      const errorMessage = this.i18n.translate('error.SHIP.NOT_FOUND' );
+      throw new NotFoundException(errorMessage);
+    }
+    return ship
   }
 
   async update(id: number, updateShipDto: UpdateShipDto) {
@@ -59,11 +63,7 @@ export class ShipsService {
   }
 
   async calcTotalCapacity(shipId: number) {
-    const ship = await this.repo.findOne({ where: { id: shipId }, relations: ['storageTanks'] });
-
-    if (!ship) {
-      throw new NotFoundException('Ship not found');
-    }
+    const ship = await this.findOne(shipId);
     const total = ship.storageTanks.reduce((acc, tank) => acc + tank.capacity, 0);
     return total;
   }

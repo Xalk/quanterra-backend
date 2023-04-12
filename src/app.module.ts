@@ -21,6 +21,11 @@ import { AuthHelper } from '@/common/helper/auth.helper';
 import { JwtModule } from '@nestjs/jwt';
 import { User } from '@/core/users/entities/user.entity';
 import { getJwtConfig } from '@/config/jwt.config';
+import {
+  AcceptLanguageResolver,
+  I18nModule,
+} from 'nestjs-i18n';
+import * as path from 'path';
 
 @Module({
   imports: [
@@ -34,6 +39,14 @@ import { getJwtConfig } from '@/config/jwt.config';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: getTypeOrmConfig,
+    }),
+    I18nModule.forRoot({
+      fallbackLanguage: 'en',
+      loaderOptions: {
+        path: path.resolve(__dirname, 'i18n/'),
+        watch: true
+      },
+      resolvers: [AcceptLanguageResolver]
     }),
     TypeOrmModule.forFeature([User]),
     UsersModule,
@@ -56,6 +69,7 @@ import { getJwtConfig } from '@/config/jwt.config';
       provide: APP_INTERCEPTOR,
       useClass: ClassSerializerInterceptor,
     },
+
   ],
 })
 export class AppModule implements NestModule {

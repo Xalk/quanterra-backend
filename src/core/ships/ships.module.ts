@@ -6,6 +6,7 @@ import { Ship } from '@/core/ships/entities/ship.entity';
 import { CrewMembersModule } from '@/core/crew-members/crew-members.module';
 import { AuthModule } from '@/core/auth/auth.module';
 
+
 @Module({
   imports: [TypeOrmModule.forFeature([Ship]), CrewMembersModule, AuthModule],
   controllers: [ShipsController],

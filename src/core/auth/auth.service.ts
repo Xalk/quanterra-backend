@@ -6,6 +6,7 @@ import { AuthHelper } from '@/common/helper/auth.helper';
 import { LoginDto } from '@/core/auth/dto/login.dto';
 import { RegisterDto } from '@/core/auth/dto/register.dto';
 import { UpdateUserDto } from '@/core/users/dto/update-user.dto';
+import { I18nRequestScopeService } from 'nestjs-i18n';
 
 
 @Injectable()
@@ -16,6 +17,9 @@ export class AuthService {
   @Inject(AuthHelper)
   private readonly helper: AuthHelper;
 
+  constructor(private readonly i18n: I18nRequestScopeService) {
+  }
+
   async register(body: RegisterDto): Promise<User | never> {
     let { firstName, lastName, email, password, role }: RegisterDto = body;
 
@@ -24,7 +28,8 @@ export class AuthService {
     if (email) {
       user = await this.repo.findOne({ where: { email } });
       if (user) {
-        throw new HttpException('Email already in use', HttpStatus.CONFLICT);
+        const errorMessage = this.i18n.translate('error.USER.EMAIL_ALREADY_IN_USE' );
+        throw new HttpException(errorMessage, HttpStatus.CONFLICT);
       }
 
     }
@@ -45,13 +50,15 @@ export class AuthService {
     const user: User = await this.repo.findOne({ where: { email } });
 
     if (!user) {
-      throw new HttpException('No user found', HttpStatus.NOT_FOUND);
+      const errorMessage = this.i18n.translate('error.USER.NOT_FOUND' );
+      throw new HttpException(errorMessage, HttpStatus.NOT_FOUND);
     }
 
     const isPasswordValid: boolean = this.helper.isPasswordValid(password, user.password);
 
     if (!isPasswordValid) {
-      throw new HttpException('Invalid login credentials', HttpStatus.UNAUTHORIZED);
+      const errorMessage = this.i18n.translate('error.USER.INVALID_LOGIN_CREDENTIALS' );
+      throw new HttpException(errorMessage, HttpStatus.UNAUTHORIZED);
     }
 
     return {
@@ -69,7 +76,8 @@ export class AuthService {
     const user = await this.repo.findOne({ where: { id } });
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      const errorMessage = this.i18n.translate('error.USER.NOT_FOUND' );
+      throw new NotFoundException(errorMessage);
     }
 
     Object.assign(user, updateUserDto);

@@ -14,7 +14,8 @@ import { CreateAndAssignUserDto } from '@/core/ships/dto/create-and-assign-user.
 @UseGuards(JwtAuthGuard, RoleGuard)
 @Roles(Role.OPERATOR, Role.ADMIN)
 export class ShipsController {
-  constructor(private readonly shipsService: ShipsService) {
+  constructor(private readonly shipsService: ShipsService
+  ) {
   }
 
   @Post()

@@ -4,11 +4,14 @@ import { UpdateSensorDto } from './dto/update-sensor.dto';
 import { Repository } from 'typeorm';
 import { Sensor } from '@/core/sensors/entities/sensor.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { I18nRequestScopeService } from 'nestjs-i18n';
 
 @Injectable()
 export class SensorsService {
 
-  constructor(@InjectRepository(Sensor) private sensorRepository: Repository<Sensor>) {
+  constructor(@InjectRepository(Sensor) private sensorRepository: Repository<Sensor>,
+              private readonly i18n: I18nRequestScopeService,
+              ) {
   }
 
   create(createSensorDto: CreateSensorDto) {
@@ -25,7 +28,8 @@ export class SensorsService {
     const sensor = await this.sensorRepository.findOne({ where: { id } });
 
     if (!sensor) {
-      throw new NotFoundException('Sensor not found');
+      const errorMessage = this.i18n.translate('error.SENSOR.NOT_FOUND' );
+      throw new NotFoundException(errorMessage);
     }
     return sensor;
   }

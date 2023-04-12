@@ -3,11 +3,14 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
+import { I18nRequestScopeService } from 'nestjs-i18n';
 
 @Injectable()
 export class UsersService {
 
-  constructor(@InjectRepository(User) private repo: Repository<User>) {
+  constructor(@InjectRepository(User) private repo: Repository<User>,
+              private readonly i18n: I18nRequestScopeService,
+              ) {
   }
 
 
@@ -21,7 +24,8 @@ export class UsersService {
     const user = await this.repo.findOne({ where: { id } });
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      const errorMessage = this.i18n.translate('error.USER.NOT_FOUND' );
+      throw new NotFoundException(errorMessage);
     }
     return user;
   }

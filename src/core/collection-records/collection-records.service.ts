@@ -6,6 +6,7 @@ import { CollectionRecord } from '@/core/collection-records/entities/collection-
 import { Repository } from 'typeorm';
 import { StorageTank } from '@/core/storage-tank/entities/storage-tank.entity';
 import { StorageTankService } from '@/core/storage-tank/storage-tank.service';
+import { I18nRequestScopeService } from 'nestjs-i18n';
 
 @Injectable()
 export class CollectionRecordsService {
@@ -13,6 +14,7 @@ export class CollectionRecordsService {
   constructor(
     @InjectRepository(CollectionRecord) private repo: Repository<CollectionRecord>,
     private readonly storageTankService: StorageTankService,
+    private readonly i18n: I18nRequestScopeService,
   ) {
   }
 
@@ -42,7 +44,8 @@ export class CollectionRecordsService {
     const record = await this.repo.findOne({ where: { id } });
 
     if (!record) {
-      throw new NotFoundException('Record not found');
+      const errorMessage = this.i18n.translate('error.RECORD.NOT_FOUND' );
+      throw new NotFoundException(errorMessage);
     }
     return record;
   }

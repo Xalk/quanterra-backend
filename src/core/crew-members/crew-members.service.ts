@@ -6,11 +6,14 @@ import { Repository } from 'typeorm';
 import { CrewMember } from '@/core/crew-members/entities/crew-member.entity';
 import { User } from '@/core/users/entities/user.entity';
 import { Ship } from '@/core/ships/entities/ship.entity';
+import { I18nRequestScopeService } from 'nestjs-i18n';
 
 @Injectable()
 export class CrewMembersService {
 
-  constructor(@InjectRepository(CrewMember) private repo: Repository<CrewMember>) {
+  constructor(@InjectRepository(CrewMember) private repo: Repository<CrewMember>,
+              private readonly i18n: I18nRequestScopeService,
+              ) {
   }
 
 
@@ -30,7 +33,8 @@ export class CrewMembersService {
     const crewMember = await this.repo.findOne({ where: { id }, relations: ['user', 'ship'] });
 
     if (!crewMember) {
-      throw new NotFoundException('Crew member not found');
+      const errorMessage = this.i18n.translate('error.CREW_MEMBER.NOT_FOUND' );
+      throw new NotFoundException(errorMessage);
     }
     return crewMember;
   }
@@ -51,7 +55,8 @@ export class CrewMembersService {
     const crewMember = await this.repo.findOne({ where: { user: { id: userId } }, relations: ['user'] });
 
     if (!crewMember) {
-      throw new NotFoundException('User is not a crew member');
+      const errorMessage = this.i18n.translate('error.CREW_MEMBER.NOT_CREW_MEMBER' );
+      throw new NotFoundException(errorMessage);
     }
 
     return crewMember;
