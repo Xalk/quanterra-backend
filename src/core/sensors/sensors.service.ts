@@ -21,25 +21,23 @@ export class SensorsService {
   }
 
 
-  async update(id: number, updateSensorDto: UpdateSensorDto) {
+  async findOne(id: number) {
     const sensor = await this.sensorRepository.findOne({ where: { id } });
 
     if (!sensor) {
       throw new NotFoundException('Sensor not found');
     }
+    return sensor;
+  }
 
+  async update(id: number, updateSensorDto: UpdateSensorDto) {
+    const sensor = await this.findOne(id);
     Object.assign(sensor, updateSensorDto);
-
     return this.sensorRepository.save(sensor);
   }
 
   async remove(id: number) {
-    const sensor = await this.sensorRepository.findOne({ where: { id } });
-
-    if (!sensor) {
-      throw new NotFoundException('Sensor not found');
-    }
-
+    const sensor = await this.findOne(id);
     return this.sensorRepository.remove(sensor);
   }
 }

@@ -29,28 +29,17 @@ export class WastesService {
     if (!waste) {
       throw new NotFoundException('Waste not found');
     }
-    return this.wasteRepository.findOne({ where: { id } });
+    return waste;
   }
 
   async update(id: number, updateWasteDto: UpdateWasteDto) {
-    const waste = await this.wasteRepository.findOne({ where: { id } });
-
-    if (!waste) {
-      throw new NotFoundException('Waste not found');
-    }
-
+    const waste = await this.findOne(id)
     Object.assign(waste, updateWasteDto);
-
     return this.wasteRepository.save(waste);
   }
 
   async remove(id: number) {
-    const waste = await this.wasteRepository.findOne({ where: { id } });
-
-    if (!waste) {
-      throw new NotFoundException('Waste not found');
-    }
-
+    const waste = await this.findOne(id)
     return this.wasteRepository.remove(waste);
   }
 

@@ -44,32 +44,21 @@ export class CollectionRecordsService {
     if (!record) {
       throw new NotFoundException('Record not found');
     }
-    return this.repo.findOne({ where: { id } });
+    return record;
   }
 
   async update(id: number, updateCollectionRecordDto: UpdateCollectionRecordDto) {
-    const record = await this.repo.findOne({ where: { id } });
-
-    if (!record) {
-      throw new NotFoundException('Record not found');
-    }
-
+    const record = await this.findOne(id);
     Object.assign(record, updateCollectionRecordDto);
-
     return this.repo.save(record);
   }
 
   async remove(id: number) {
-    const record = await this.repo.findOne({ where: { id } });
-
-    if (!record) {
-      throw new NotFoundException('Record not found');
-    }
-
+    const record = await this.findOne(id);
     return this.repo.remove(record);
   }
 
-  async getAvgByMonth(){
+  async getAvgByMonth() {
     const startOfMonth = new Date();
     startOfMonth.setMonth(startOfMonth.getMonth() - 5);
     startOfMonth.setDate(1);
@@ -93,7 +82,7 @@ export class CollectionRecordsService {
       const formattedMonth = month.toLocaleDateString('en-US', { month: 'long' }).toLowerCase();
       acc[formattedMonth] = {
         kg: kg,
-        liters: liters
+        liters: liters,
       };
       return acc;
     }, {});

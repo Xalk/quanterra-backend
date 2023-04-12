@@ -28,39 +28,26 @@ export class StorageTankService {
   }
 
   async findOne(id: number) {
-    const storageTank = await this.repo.findOne({ where: { id } });
-
-    if (!storageTank) {
-      throw new NotFoundException('Storage tank not found');
-    }
-    return this.repo.findOne({
+    const storageTank = await this.repo.findOne({
       where: { id },
       relations: ['ship', 'waste', 'collectionRecords', 'sensor'],
     });
-  }
-
-  async update(id: number, updateStorageTankDto: UpdateStorageTankDto) {
-    const storageTank = await this.repo.findOne({ where: { id } });
 
     if (!storageTank) {
       throw new NotFoundException('Storage tank not found');
     }
+    return storageTank;
+  }
 
+  async update(id: number, updateStorageTankDto: UpdateStorageTankDto) {
+    const storageTank = await this.findOne(id);
     Object.assign(storageTank, updateStorageTankDto);
-
     storageTank.sensor = { id: updateStorageTankDto.sensorId } as Sensor;
-
-
     return this.repo.save(storageTank);
   }
 
   async remove(id: number) {
-    const storageTank = await this.repo.findOne({ where: { id } });
-
-    if (!storageTank) {
-      throw new NotFoundException('Storage tank not found');
-    }
-
+    const storageTank = await this.findOne(id);
     return this.repo.remove(storageTank);
   }
 }

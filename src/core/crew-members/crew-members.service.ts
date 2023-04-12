@@ -27,36 +27,22 @@ export class CrewMembersService {
   }
 
   async findOne(id: number) {
-    const crewMember = await this.repo.findOne({ where: { id } });
+    const crewMember = await this.repo.findOne({ where: { id }, relations: ['user', 'ship'] });
 
     if (!crewMember) {
       throw new NotFoundException('Crew member not found');
     }
-    return this.repo.findOne({ where: { id }, relations: ['user', 'ship'] });
+    return crewMember;
   }
 
   async update(id: number, updateCrewMemberDto: UpdateCrewMemberDto) {
-    const crewMember = await this.repo.findOne({ where: { id } });
-
-    if (!crewMember) {
-      throw new NotFoundException('Crew member not found');
-    }
-
-    // Object.assign(crewMember, updateCrewMemberDto);
-
-    return this.repo.save({
-      ...crewMember,
-      ...updateCrewMemberDto,
-    });
+    const crewMember = await this.findOne(id)
+    Object.assign(crewMember, updateCrewMemberDto);
+    return this.repo.save(crewMember)
   }
 
   async remove(id: number) {
-    const crewMember = await this.repo.findOne({ where: { id } });
-
-    if (!crewMember) {
-      throw new NotFoundException('Crew member not found');
-    }
-
+    const crewMember = await this.findOne(id)
     return this.repo.remove(crewMember);
   }
 

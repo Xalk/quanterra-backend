@@ -48,24 +48,13 @@ export class ShipsService {
   }
 
   async update(id: number, updateShipDto: UpdateShipDto) {
-    const ship = await this.repo.findOne({ where: { id } });
-
-    if (!ship) {
-      throw new NotFoundException('Ship not found');
-    }
-
+    const ship = await this.findOne(id);
     Object.assign(ship, updateShipDto);
-
     return this.repo.save(ship);
   }
 
   async remove(id: number) {
-    const ship = await this.repo.findOne({ where: { id } });
-
-    if (!ship) {
-      throw new NotFoundException('Ship not found');
-    }
-
+    const ship = await this.findOne(id);
     return this.repo.remove(ship);
   }
 
