@@ -8,10 +8,12 @@
   "USER": {
     "NOT_FOUND": "User not found",
     "EMAIL_ALREADY_IN_USE": "Email already in use",
-    "INVALID_LOGIN_CREDENTIALS": "Invalid login credentials"
+    "INVALID_LOGIN_CREDENTIALS": "Invalid login credentials",
+    "FORBIDDEN" : "Forbidden"
   },
   "STORAGE_TANK": {
-    "NOT_FOUND": "Storage tank not found"
+    "NOT_FOUND": "Storage tank not found",
+    "EMPTY": "The storage tank is currently empty"
   },
   "SENSOR": {
     "NOT_FOUND": "Sensor not found"

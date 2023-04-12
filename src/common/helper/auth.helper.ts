@@ -5,13 +5,16 @@ import { Repository } from 'typeorm';
 
 import * as bcrypt from 'bcryptjs';
 import { User } from '@/core/users/entities/user.entity';
+import { I18nRequestScopeService } from 'nestjs-i18n';
 
 @Injectable()
 export class AuthHelper {
   @InjectRepository(User)
   private readonly repo: Repository<User>;
   
-  constructor(private readonly jwt: JwtService) {
+  constructor(private readonly jwt: JwtService,
+              private readonly i18n: I18nRequestScopeService,
+              ) {
   }
 
   // Decoding the JWT Token
@@ -46,7 +49,8 @@ export class AuthHelper {
     const decoded: unknown = this.jwt.verify(token);
 
     if (!decoded) {
-      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+      const errorMessage = this.i18n.translate('error.USER.FORBIDDEN' );
+      throw new HttpException(errorMessage, HttpStatus.FORBIDDEN);
     }
 
     const user: User = await this.validateUser(decoded);

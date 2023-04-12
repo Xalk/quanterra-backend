@@ -24,7 +24,8 @@ export class CollectionRecordsService {
     const storageTank = await this.storageTankService.findOne(createCollectionRecordDto.storageTankId);
 
     if (storageTank.currentLevel === 0) {
-      throw new HttpException('The storage tank is currently empty', HttpStatus.CONFLICT);
+      const errorMessage = this.i18n.translate('error.STORAGE_TANK.EMPTY');
+      throw new HttpException(errorMessage, HttpStatus.CONFLICT);
     }
 
     collectionRecord.treatedAmount = storageTank.currentLevel;
@@ -44,7 +45,7 @@ export class CollectionRecordsService {
     const record = await this.repo.findOne({ where: { id } });
 
     if (!record) {
-      const errorMessage = this.i18n.translate('error.RECORD.NOT_FOUND' );
+      const errorMessage = this.i18n.translate('error.RECORD.NOT_FOUND');
       throw new NotFoundException(errorMessage);
     }
     return record;

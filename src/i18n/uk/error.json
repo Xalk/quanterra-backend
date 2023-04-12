@@ -8,10 +8,12 @@
   "USER": {
     "NOT_FOUND": "Користувача не знайдено",
     "EMAIL_ALREADY_IN_USE": "Електронна пошта вже використовується",
-    "INVALID_LOGIN_CREDENTIALS": "Неправильні облікові дані для входу"
+    "INVALID_LOGIN_CREDENTIALS": "Неправильні облікові дані для входу",
+    "FORBIDDEN" : "Заборонено"
   },
   "STORAGE_TANK": {
-    "NOT_FOUND": "Резервуар не знайдено"
+    "NOT_FOUND": "Резервуар не знайдено",
+    "EMPTY": "Резервуар наразі порожній"
   },
   "SENSOR": {
     "NOT_FOUND": "Датчик не знайдено"
