@@ -12,7 +12,7 @@ import { getJwtConfig } from '@/config/jwt.config';
 
 @Module({
   imports: [
-    ConfigModule,
+    ConfigModule.forRoot(),
     PassportModule.register({ defaultStrategy: 'jwt', property: 'user' }),
     JwtModule.registerAsync({
       imports: [ConfigModule],

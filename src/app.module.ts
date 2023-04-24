@@ -26,15 +26,18 @@ import {
   I18nModule,
 } from 'nestjs-i18n';
 import * as path from 'path';
+import { PassportModule } from '@nestjs/passport';
+import { JwtStrategy } from '@/common/strategy/jwt.strategy';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
+    PassportModule.register({ defaultStrategy: 'jwt', property: 'user' }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: getJwtConfig,
     }),
-    ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -65,6 +68,7 @@ import * as path from 'path';
   providers: [
     AuthHelper,
     AppService,
+    JwtStrategy,
     {
       provide: APP_INTERCEPTOR,
       useClass: ClassSerializerInterceptor,
