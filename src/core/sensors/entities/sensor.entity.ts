@@ -10,6 +10,9 @@ export class Sensor extends CustomBaseEntity {
   name: string;
 
   @Column()
+  connectionKey: string;
+
+  @Column()
   status: string;
 
   @OneToMany(() => SensorRecord, sensorRecord => sensorRecord.sensor)

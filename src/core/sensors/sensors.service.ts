@@ -11,11 +11,12 @@ export class SensorsService {
 
   constructor(@InjectRepository(Sensor) private sensorRepository: Repository<Sensor>,
               private readonly i18n: I18nRequestScopeService,
-              ) {
+  ) {
   }
 
   create(createSensorDto: CreateSensorDto) {
     const sensor = this.sensorRepository.create(createSensorDto);
+    sensor.connectionKey = (Math.random() + 1).toString(36).substring(6);
     return this.sensorRepository.save(sensor);
   }
 
@@ -28,7 +29,17 @@ export class SensorsService {
     const sensor = await this.sensorRepository.findOne({ where: { id } });
 
     if (!sensor) {
-      const errorMessage = this.i18n.translate('error.SENSOR.NOT_FOUND' );
+      const errorMessage = this.i18n.translate('error.SENSOR.NOT_FOUND');
+      throw new NotFoundException(errorMessage);
+    }
+    return sensor;
+  }
+
+  async findOneByKey(connectionKey: string) {
+    const sensor = await this.sensorRepository.findOne({ where: { connectionKey } });
+
+    if (!sensor) {
+      const errorMessage = this.i18n.translate('error.SENSOR.NOT_FOUND_BY_KEY');
       throw new NotFoundException(errorMessage);
     }
     return sensor;

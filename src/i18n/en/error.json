@@ -16,7 +16,8 @@
     "EMPTY": "The storage tank is currently empty"
   },
   "SENSOR": {
-    "NOT_FOUND": "Sensor not found"
+    "NOT_FOUND": "Sensor not found",
+    "NOT_FOUND_BY_KEY": "Sensor not found. Please make sure the key is correct and try again."
   },
   "CREW_MEMBER": {
     "NOT_FOUND": "Crew member not found",

@@ -18,6 +18,10 @@ export class SensorsController {
     return this.sensorsService.findAll();
   }
 
+  @Get('by-id/:id')
+  getOne(@Param('id') id: string) {
+    return this.sensorsService.findOne(+id);
+  }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateSensorDto: UpdateSensorDto) {
