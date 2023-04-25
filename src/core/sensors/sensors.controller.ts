@@ -23,10 +23,21 @@ export class SensorsController {
     return this.sensorsService.findOne(+id);
   }
 
+  @Get('by-key/:key')
+  getOneByKey(@Param('key') key: string) {
+    return this.sensorsService.findOneByKey(key);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateSensorDto: UpdateSensorDto) {
     return this.sensorsService.update(+id, updateSensorDto);
   }
+
+  @Patch('/update-percentage/:storageTankId')
+  updatePercentage(@Param('storageTankId') storageTankId: string, @Body() body: { occupancyPercentage: number }) {
+    return this.sensorsService.updateOccupancyPercentage(+storageTankId, body.occupancyPercentage);
+  }
+
 
   @Delete(':id')
   remove(@Param('id') id: string) {

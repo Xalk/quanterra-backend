@@ -15,7 +15,7 @@ export class StorageTank extends CustomBaseEntity {
   capacity: number;
 
   @Column()
-  currentLevel: number;
+  occupancyPercentage: number;
 
   @ManyToOne(() => Ship, ship => ship.storageTanks)
   @JoinColumn({ name: 'ship_id' })

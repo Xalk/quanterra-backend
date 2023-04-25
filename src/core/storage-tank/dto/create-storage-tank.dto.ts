@@ -9,7 +9,7 @@ export class CreateStorageTankDto {
   capacity: number;
 
   @IsNumber()
-  currentLevel: number;
+  occupancyPercentage: number;
 
   @IsNumber()
   shipId: number;

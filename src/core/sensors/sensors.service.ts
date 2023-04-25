@@ -5,12 +5,14 @@ import { Repository } from 'typeorm';
 import { Sensor } from '@/core/sensors/entities/sensor.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { I18nRequestScopeService } from 'nestjs-i18n';
+import { StorageTankService } from '@/core/storage-tank/storage-tank.service';
 
 @Injectable()
 export class SensorsService {
 
   constructor(@InjectRepository(Sensor) private sensorRepository: Repository<Sensor>,
               private readonly i18n: I18nRequestScopeService,
+              private readonly storageTankService: StorageTankService,
   ) {
   }
 
@@ -36,7 +38,7 @@ export class SensorsService {
   }
 
   async findOneByKey(connectionKey: string) {
-    const sensor = await this.sensorRepository.findOne({ where: { connectionKey } });
+    const sensor = await this.sensorRepository.findOne({ where: { connectionKey }, relations: ['storageTank'] });
 
     if (!sensor) {
       const errorMessage = this.i18n.translate('error.SENSOR.NOT_FOUND_BY_KEY');
@@ -54,5 +56,9 @@ export class SensorsService {
   async remove(id: number) {
     const sensor = await this.findOne(id);
     return this.sensorRepository.remove(sensor);
+  }
+
+  async updateOccupancyPercentage(storageTankId: number, occupancyPercentage: number) {
+    await this.storageTankService.update(storageTankId, { occupancyPercentage });
   }
 }

@@ -23,17 +23,17 @@ export class CollectionRecordsService {
 
     const storageTank = await this.storageTankService.findOne(createCollectionRecordDto.storageTankId);
 
-    if (storageTank.currentLevel === 0) {
+    if (storageTank.occupancyPercentage === 0) {
       const errorMessage = this.i18n.translate('error.STORAGE_TANK.EMPTY');
       throw new HttpException(errorMessage, HttpStatus.CONFLICT);
     }
 
-    collectionRecord.treatedAmount = storageTank.currentLevel;
+    collectionRecord.treatedAmount = (100 - storageTank.occupancyPercentage) * storageTank.capacity / 100;
     collectionRecord.unit = storageTank.unit;
     collectionRecord.storageTank = { id: createCollectionRecordDto.storageTankId } as StorageTank;
 
 
-    await this.storageTankService.update(storageTank.id, { currentLevel: 0 });
+    await this.storageTankService.update(storageTank.id, { occupancyPercentage: 0 });
     return this.repo.save(collectionRecord);
   }
 
