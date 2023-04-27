@@ -6,8 +6,11 @@ import { JwtAuthGuard } from '@/common/guard/jwt-auth.guard';
 import { RoleGuard } from '@/common/guard/role.guard';
 import { Roles } from '@/common/decorators/roles.decorator';
 import { Role } from '@/common/enums/role.enum';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 
 @Controller('wastes')
+@ApiTags('wastes')
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RoleGuard)
 @Roles(Role.ADMIN)
 export class WastesController {
@@ -15,6 +18,7 @@ export class WastesController {
   }
 
   @Post()
+  @ApiBody({ type: CreateWasteDto })
   create(@Body() createWasteDto: CreateWasteDto) {
     return this.wastesService.create(createWasteDto);
   }
@@ -30,6 +34,7 @@ export class WastesController {
   }
 
   @Patch(':id')
+  @ApiBody({ type: UpdateWasteDto })
   update(@Param('id') id: string, @Body() updateWasteDto: UpdateWasteDto) {
     return this.wastesService.update(+id, updateWasteDto);
   }

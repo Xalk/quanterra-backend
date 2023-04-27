@@ -15,19 +15,23 @@ import { LoginDto } from '@/core/auth/dto/login.dto';
 import { JwtAuthGuard } from '@/common/guard/jwt-auth.guard';
 import { UpdateUserDto } from '@/core/users/dto/update-user.dto';
 import { CurrentUser } from '@/common/decorators/current-user.decorator';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 
 
 @Controller('auth')
+@ApiTags('auth')
 export class AuthController {
   @Inject(AuthService)
   private readonly service: AuthService;
 
   @Post('register')
+  @ApiBody({ type: RegisterDto })
   private register(@Body() body: RegisterDto): Promise<User | never> {
     return this.service.register(body);
   }
 
   @Post('login')
+  @ApiBody({ type: LoginDto })
   private login(@Body() body: LoginDto) {
     return this.service.login(body);
   }
@@ -39,6 +43,8 @@ export class AuthController {
   }
 
   @Patch('profile')
+  @ApiBody({ type: RegisterDto })
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   updateProfile(@CurrentUser() user: User,  @Body() updateUserDto: UpdateUserDto) {
     return this.service.update(+user.id, updateUserDto);

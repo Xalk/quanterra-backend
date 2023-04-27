@@ -6,14 +6,18 @@ import { JwtAuthGuard } from '@/common/guard/jwt-auth.guard';
 import { RoleGuard } from '@/common/guard/role.guard';
 import { Roles } from '@/common/decorators/roles.decorator';
 import { Role } from '@/common/enums/role.enum';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 
 @Controller('collection-records')
+@ApiTags('collection-records')
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RoleGuard)
 @Roles(Role.ADMIN, Role.OPERATOR, Role.CREW_MEMBER)
 export class CollectionRecordsController {
   constructor(private readonly collectionRecordsService: CollectionRecordsService) {}
 
   @Post()
+  @ApiBody({ type: CreateCollectionRecordDto })
   create(@Body() createCollectionRecordDto: CreateCollectionRecordDto) {
     return this.collectionRecordsService.create(createCollectionRecordDto);
   }
@@ -29,6 +33,7 @@ export class CollectionRecordsController {
   }
 
   @Patch(':id')
+  @ApiBody({ type: UpdateCollectionRecordDto })
   update(@Param('id') id: string, @Body() updateCollectionRecordDto: UpdateCollectionRecordDto) {
     return this.collectionRecordsService.update(+id, updateCollectionRecordDto);
   }

@@ -9,16 +9,20 @@ import { Role } from '@/common/enums/role.enum';
 import { CurrentUser } from '@/common/decorators/current-user.decorator';
 import { User } from '@/core/users/entities/user.entity';
 import { CreateAndAssignUserDto } from '@/core/ships/dto/create-and-assign-user.dto';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 
 @Controller('ships')
+@ApiTags('ships')
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RoleGuard)
 @Roles(Role.OPERATOR, Role.ADMIN)
 export class ShipsController {
-  constructor(private readonly shipsService: ShipsService
+  constructor(private readonly shipsService: ShipsService,
   ) {
   }
 
   @Post()
+  @ApiBody({ type: CreateShipDto })
   create(@Body() createShipDto: CreateShipDto) {
     return this.shipsService.create(createShipDto);
   }
@@ -36,6 +40,7 @@ export class ShipsController {
   }
 
   @Patch(':id')
+  @ApiBody({ type: UpdateShipDto })
   update(@Param('id') id: string, @Body() updateShipDto: UpdateShipDto) {
     return this.shipsService.update(+id, updateShipDto);
   }
@@ -52,6 +57,7 @@ export class ShipsController {
   }
 
   @Post(':id/crew')
+  @ApiBody({ type: CreateAndAssignUserDto })
   assignUser(@Param('id') id: string, @Body() createAndAssignUserDto: CreateAndAssignUserDto) {
     return this.shipsService.createUserAndAssignCrewToShip(createAndAssignUserDto, +id);
   }

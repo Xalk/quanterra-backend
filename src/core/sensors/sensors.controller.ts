@@ -2,13 +2,16 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { SensorsService } from './sensors.service';
 import { CreateSensorDto } from './dto/create-sensor.dto';
 import { UpdateSensorDto } from './dto/update-sensor.dto';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 
 @Controller('sensors')
+@ApiTags('sensors')
 export class SensorsController {
   constructor(private readonly sensorsService: SensorsService) {
   }
 
   @Post()
+  @ApiBody({ type: CreateSensorDto })
   create(@Body() createSensorDto: CreateSensorDto) {
     return this.sensorsService.create(createSensorDto);
   }
@@ -29,6 +32,7 @@ export class SensorsController {
   }
 
   @Patch(':id')
+  @ApiBody({ type: UpdateSensorDto })
   update(@Param('id') id: string, @Body() updateSensorDto: UpdateSensorDto) {
     return this.sensorsService.update(+id, updateSensorDto);
   }

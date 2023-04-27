@@ -6,9 +6,12 @@ import { JwtAuthGuard } from '@/common/guard/jwt-auth.guard';
 import { Roles } from '@/common/decorators/roles.decorator';
 import { Role } from '@/common/enums/role.enum';
 import { RoleGuard } from '@/common/guard/role.guard';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 
 
 @Controller('crew-members')
+@ApiTags('crew-members')
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RoleGuard)
 @Roles(Role.OPERATOR, Role.ADMIN)
 export class CrewMembersController {
@@ -17,6 +20,7 @@ export class CrewMembersController {
 
 
   @Post()
+  @ApiBody({ type: CreateCrewMemberDto })
   create(@Body() createCrewMemberDto: CreateCrewMemberDto) {
     return this.crewMembersService.create(createCrewMemberDto);
   }
@@ -33,6 +37,7 @@ export class CrewMembersController {
   }
 
   @Patch(':id')
+  @ApiBody({ type: UpdateCrewMemberDto })
   update(@Param('id') id: string, @Body() updateCrewMemberDto: UpdateCrewMemberDto) {
     return this.crewMembersService.update(+id, updateCrewMemberDto);
   }

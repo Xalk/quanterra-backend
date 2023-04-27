@@ -6,8 +6,11 @@ import { JwtAuthGuard } from '@/common/guard/jwt-auth.guard';
 import { RoleGuard } from '@/common/guard/role.guard';
 import { Roles } from '@/common/decorators/roles.decorator';
 import { Role } from '@/common/enums/role.enum';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 
 @Controller('storage-tank')
+@ApiTags('storage-tank')
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RoleGuard)
 @Roles(Role.ADMIN, Role.OPERATOR)
 export class StorageTankController {
@@ -15,6 +18,7 @@ export class StorageTankController {
   }
 
   @Post()
+  @ApiBody({ type: CreateStorageTankDto })
   create(@Body() createStorageTankDto: CreateStorageTankDto) {
     return this.storageTankService.create(createStorageTankDto);
   }
@@ -30,6 +34,7 @@ export class StorageTankController {
   }
 
   @Patch(':id')
+  @ApiBody({ type: UpdateStorageTankDto })
   update(@Param('id') id: string, @Body() updateStorageTankDto: UpdateStorageTankDto) {
     return this.storageTankService.update(+id, updateStorageTankDto);
   }

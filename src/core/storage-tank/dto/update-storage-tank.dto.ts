@@ -1,11 +1,24 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateStorageTankDto } from './create-storage-tank.dto';
-import { IsNumber, IsOptional } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateStorageTankDto extends PartialType(CreateStorageTankDto) {
 
+  @ApiProperty()
+  unit?: string;
 
-  @IsNumber()
-  @IsOptional()
+  @ApiProperty()
+  capacity?: number;
+
+  @ApiProperty()
+  occupancyPercentage?: number;
+
+  @ApiProperty()
+  shipId?: number;
+
+  @ApiProperty()
+  wasteId?: number;
+
+  @ApiProperty()
   sensorId?: number;
 }
