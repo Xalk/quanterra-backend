@@ -29,6 +29,7 @@ import * as path from 'path';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from '@/common/strategy/jwt.strategy';
 
+
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -73,7 +74,6 @@ import { JwtStrategy } from '@/common/strategy/jwt.strategy';
       provide: APP_INTERCEPTOR,
       useClass: ClassSerializerInterceptor,
     },
-
   ],
 })
 export class AppModule implements NestModule {

@@ -3,6 +3,7 @@ import { SensorsService } from './sensors.service';
 import { CreateSensorDto } from './dto/create-sensor.dto';
 import { UpdateSensorDto } from './dto/update-sensor.dto';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { UpdatePercentageDto } from '@/core/sensors/dto/update-percentage.dto';
 
 @Controller('sensors')
 @ApiTags('sensors')
@@ -38,7 +39,8 @@ export class SensorsController {
   }
 
   @Patch('/update-percentage/:storageTankId')
-  updatePercentage(@Param('storageTankId') storageTankId: string, @Body() body: { occupancyPercentage: number }) {
+  @ApiBody({ type: UpdatePercentageDto })
+  updatePercentage(@Param('storageTankId') storageTankId: string, @Body() body: UpdatePercentageDto) {
     return this.sensorsService.updateOccupancyPercentage(+storageTankId, body.occupancyPercentage);
   }
 
