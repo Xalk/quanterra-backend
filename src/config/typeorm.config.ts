@@ -1,5 +1,6 @@
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { StorageTankSubscriber } from '@/core/socket/storage-tank.subscriber';
 
 export const getTypeOrmConfig = async (configService: ConfigService): Promise<TypeOrmModuleOptions> => ({
   type: 'postgres',
@@ -10,4 +11,6 @@ export const getTypeOrmConfig = async (configService: ConfigService): Promise<Ty
   password: configService.get('DB_PASSWORD'),
   autoLoadEntities: true,
   synchronize: true,
+  migrationsRun: true,
+  subscribers: [StorageTankSubscriber],
 });

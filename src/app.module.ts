@@ -28,6 +28,7 @@ import {
 import * as path from 'path';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from '@/common/strategy/jwt.strategy';
+import { SocketModule } from './core/socket/socket.module';
 
 
 @Module({
@@ -64,6 +65,7 @@ import { JwtStrategy } from '@/common/strategy/jwt.strategy';
     SensorRecordsModule,
     ReportsModule,
     UserLogsModule,
+    SocketModule,
   ],
   controllers: [AppController],
   providers: [
