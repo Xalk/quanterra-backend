@@ -11,10 +11,10 @@ import { I18nRequestScopeService } from 'nestjs-i18n';
 export class AuthHelper {
   @InjectRepository(User)
   private readonly repo: Repository<User>;
-  
+
   constructor(private readonly jwt: JwtService,
               private readonly i18n: I18nRequestScopeService,
-              ) {
+  ) {
   }
 
   // Decoding the JWT Token
@@ -24,12 +24,12 @@ export class AuthHelper {
 
   // Get User by User ID we get from decode()
   public async validateUser(decoded: any): Promise<User> {
-    return this.repo.findOneBy({id: decoded.id});
+    return this.repo.findOneBy({ id: decoded.id });
   }
 
   // Generate JWT Token
-  public generateToken(user: User): string {
-    return this.jwt.sign({ id: user.id, email: user.email });
+  public generateToken(user: User, expiresIn: string): string {
+    return this.jwt.sign({ id: user.id, email: user.email }, { expiresIn });
   }
 
   // Validate User's password
@@ -44,12 +44,20 @@ export class AuthHelper {
     return bcrypt.hashSync(password, salt);
   }
 
+  public async checkToken(token: string) {
+    const result = await this.jwt.verifyAsync(token);
+    if (!result) {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
+    return result;
+  }
+
   // Validate JWT Token, throw forbidden error if JWT Token is invalid
   private async validate(token: string): Promise<boolean | never> {
     const decoded: unknown = this.jwt.verify(token);
 
     if (!decoded) {
-      const errorMessage = this.i18n.translate('error.USER.FORBIDDEN' );
+      const errorMessage = this.i18n.translate('error.USER.FORBIDDEN');
       throw new HttpException(errorMessage, HttpStatus.FORBIDDEN);
     }
 

@@ -7,6 +7,7 @@ import { LoginDto } from '@/core/auth/dto/login.dto';
 import { RegisterDto } from '@/core/auth/dto/register.dto';
 import { UpdateUserDto } from '@/core/users/dto/update-user.dto';
 import { I18nRequestScopeService } from 'nestjs-i18n';
+import { RefreshToken } from '@/core/auth/dto/refresh-token.dto';
 
 
 @Injectable()
@@ -20,7 +21,7 @@ export class AuthService {
   constructor(private readonly i18n: I18nRequestScopeService) {
   }
 
-  async register(body: RegisterDto): Promise<User | never> {
+  async register(body: RegisterDto) {
     let { firstName, lastName, email, password, role }: RegisterDto = body;
 
     let user: User;
@@ -28,7 +29,7 @@ export class AuthService {
     if (email) {
       user = await this.repo.findOne({ where: { email } });
       if (user) {
-        const errorMessage = this.i18n.translate('error.USER.EMAIL_ALREADY_IN_USE' );
+        const errorMessage = this.i18n.translate('error.USER.EMAIL_ALREADY_IN_USE');
         throw new HttpException(errorMessage, HttpStatus.CONFLICT);
       }
 
@@ -42,7 +43,15 @@ export class AuthService {
     user.email = email;
     user.password = this.helper.encodePassword(password);
 
-    return this.repo.save(user);
+    await this.repo.save(user);
+
+    const { accessToken, refreshToken } = await this.getTokenPair(user);
+
+    return {
+      user,
+      accessToken,
+      refreshToken,
+    };
   }
 
   async login(body: LoginDto) {
@@ -50,25 +59,39 @@ export class AuthService {
     const user: User = await this.repo.findOne({ where: { email } });
 
     if (!user) {
-      const errorMessage = this.i18n.translate('error.USER.NOT_FOUND' );
+      const errorMessage = this.i18n.translate('error.USER.NOT_FOUND');
       throw new HttpException(errorMessage, HttpStatus.NOT_FOUND);
     }
 
     const isPasswordValid: boolean = this.helper.isPasswordValid(password, user.password);
 
     if (!isPasswordValid) {
-      const errorMessage = this.i18n.translate('error.USER.INVALID_LOGIN_CREDENTIALS' );
+      const errorMessage = this.i18n.translate('error.USER.INVALID_LOGIN_CREDENTIALS');
       throw new HttpException(errorMessage, HttpStatus.UNAUTHORIZED);
     }
 
+    const { accessToken, refreshToken } = await this.getTokenPair(user);
+
     return {
       user,
-      accessToken: this.helper.generateToken(user),
+      accessToken,
+      refreshToken,
     };
   }
 
-  async refresh(user: User): Promise<string> {
-    return this.helper.generateToken(user);
+  async refresh(dto: RefreshToken) {
+    const { refreshToken: tokenToCheck } = dto;
+    const res = await this.helper.checkToken(tokenToCheck);
+
+    const user = await this.repo.findOne({ where: { id: res.id } });
+
+    const { accessToken, refreshToken } = await this.getTokenPair(user);
+
+    return {
+      user,
+      accessToken,
+      refreshToken,
+    };
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
@@ -76,13 +99,19 @@ export class AuthService {
     const user = await this.repo.findOne({ where: { id } });
 
     if (!user) {
-      const errorMessage = this.i18n.translate('error.USER.NOT_FOUND' );
+      const errorMessage = this.i18n.translate('error.USER.NOT_FOUND');
       throw new NotFoundException(errorMessage);
     }
 
     Object.assign(user, updateUserDto);
 
     return this.repo.save(user);
+  }
+
+  private async getTokenPair(user: User) {
+    const accessToken = this.helper.generateToken(user, '7d');
+    const refreshToken = this.helper.generateToken(user, '30d');
+    return { accessToken, refreshToken };
   }
 
 

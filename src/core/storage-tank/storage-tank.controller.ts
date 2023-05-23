@@ -44,6 +44,4 @@ export class StorageTankController {
     return this.storageTankService.remove(+id);
   }
 
-
-
 }

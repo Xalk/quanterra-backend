@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { ShipsService } from './ships.service';
 import { CreateShipDto } from './dto/create-ship.dto';
 import { UpdateShipDto } from './dto/update-ship.dto';
@@ -29,8 +29,8 @@ export class ShipsController {
 
   @Get()
   @Roles(Role.ADMIN, Role.OPERATOR, Role.CREW_MEMBER)
-  findAll() {
-    return this.shipsService.findAll();
+  findAll(@Query('search') searchTerm?: string) {
+    return this.shipsService.findAll(searchTerm);
   }
 
   @Get('by-id/:id')
@@ -56,11 +56,15 @@ export class ShipsController {
     return this.shipsService.getShipsByUserId(user.id);
   }
 
-  @Post(':id/crew')
+  @Post(':id/assign')
   @ApiBody({ type: CreateAndAssignUserDto })
   assignUser(@Param('id') id: string, @Body() createAndAssignUserDto: CreateAndAssignUserDto) {
     return this.shipsService.createUserAndAssignCrewToShip(createAndAssignUserDto, +id);
   }
 
+  @Get('/main')
+  main() {
+    return this.shipsService.main();
+  }
 
 }

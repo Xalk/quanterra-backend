@@ -4,11 +4,9 @@ import {
   Inject,
   Post,
   UseGuards,
-  Req,
   Patch,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { Request } from 'express';
 import { RegisterDto } from '@/core/auth/dto/register.dto';
 import { User } from '@/core/users/entities/user.entity';
 import { LoginDto } from '@/core/auth/dto/login.dto';
@@ -16,6 +14,7 @@ import { JwtAuthGuard } from '@/common/guard/jwt-auth.guard';
 import { UpdateUserDto } from '@/core/users/dto/update-user.dto';
 import { CurrentUser } from '@/common/decorators/current-user.decorator';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
+import { RefreshToken } from '@/core/auth/dto/refresh-token.dto';
 
 
 @Controller('auth')
@@ -26,7 +25,7 @@ export class AuthController {
 
   @Post('register')
   @ApiBody({ type: RegisterDto })
-  private register(@Body() body: RegisterDto): Promise<User | never> {
+  private register(@Body() body: RegisterDto) {
     return this.service.register(body);
   }
 
@@ -37,9 +36,8 @@ export class AuthController {
   }
 
   @Post('refresh')
-  @UseGuards(JwtAuthGuard)
-  private refresh(@Req() { user }: Request): Promise<string | never> {
-    return this.service.refresh(<User>user);
+  private refresh(@Body() refreshToken: RefreshToken) {
+    return this.service.refresh(refreshToken);
   }
 
   @Patch('profile')

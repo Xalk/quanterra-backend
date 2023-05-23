@@ -27,8 +27,7 @@ export class CollectionRecordsService {
       const errorMessage = this.i18n.translate('error.STORAGE_TANK.EMPTY');
       throw new HttpException(errorMessage, HttpStatus.CONFLICT);
     }
-
-    collectionRecord.treatedAmount = (100 - storageTank.occupancyPercentage) * storageTank.capacity / 100;
+    collectionRecord.treatedAmount = Math.round((100 - storageTank.occupancyPercentage) * storageTank.capacity / 100);
     collectionRecord.unit = storageTank.unit;
     collectionRecord.storageTank = { id: createCollectionRecordDto.storageTankId } as StorageTank;
 
@@ -38,7 +37,7 @@ export class CollectionRecordsService {
   }
 
   findAll() {
-    return this.repo.find({ relations: ['storageTank'] });
+    return this.repo.find({ relations: {storageTank: {ship:true, waste: true}} });
   }
 
   async findOne(id: number) {
@@ -62,7 +61,46 @@ export class CollectionRecordsService {
     return this.repo.remove(record);
   }
 
-  async getAvgByMonth() {
+  async getSumByMonth(shipId: number): Promise<{ month: string; kg: number; liters: number }[]> {
+    const startOfMonth = new Date();
+    startOfMonth.setMonth(startOfMonth.getMonth() - 5);
+    startOfMonth.setDate(1);
+    startOfMonth.setHours(0, 0, 0, 0);
+
+    const endOfMonth = new Date();
+    endOfMonth.setHours(23, 59, 59, 999);
+
+
+
+    const result = await this.repo
+      .createQueryBuilder('collection_record')
+      .leftJoin('collection_record.storageTank', 'storage_tank')
+      .select(`DATE_TRUNC('month', collection_record."createdAt") AS month`)
+      .addSelect('SUM(collection_record."treatedAmount") FILTER (WHERE collection_record."unit" = \'kg\')', 'kg')
+      .addSelect('SUM(collection_record."treatedAmount") FILTER (WHERE collection_record."unit" = \'liters\')', 'liters')
+      .where('collection_record."createdAt" >= :startOfMonth', { startOfMonth })
+      .andWhere('collection_record."createdAt" <= :endOfMonth', { endOfMonth })
+      .andWhere('storage_tank."ship_id" = :shipId', { shipId })
+      .groupBy('month')
+      .orderBy('month')
+      .getRawMany();
+
+
+    const formattedResult = result.map(({ month, kg, liters }) => {
+      const formattedMonth = month.toLocaleDateString('en-US', { month: 'long' }).toLowerCase();
+      return {
+        month: formattedMonth,
+        kg: kg || 0,
+        liters: liters || 0,
+      };
+    });
+
+    return formattedResult;
+  }
+
+
+
+  async getTotalTreatedAmountByMonth() {
     const startOfMonth = new Date();
     startOfMonth.setMonth(startOfMonth.getMonth() - 5);
     startOfMonth.setDate(1);
@@ -73,24 +111,20 @@ export class CollectionRecordsService {
 
     const result = await this.repo.createQueryBuilder('collection_record')
       .select(`DATE_TRUNC('month', collection_record."createdAt") AS month`)
-      .addSelect('SUM(collection_record."treatedAmount") FILTER (WHERE collection_record."unit" = \'kg\')', 'kg')
-      .addSelect('SUM(collection_record."treatedAmount") FILTER (WHERE collection_record."unit" = \'liters\')', 'liters')
+      .addSelect('SUM(collection_record."treatedAmount")', 'totalCollectionRecords')
       .where('collection_record."createdAt" >= :startOfMonth', { startOfMonth })
       .andWhere('collection_record."createdAt" <= :endOfMonth', { endOfMonth })
       .groupBy('month')
       .orderBy('month')
       .getRawMany();
 
-
-    const formattedResult = result.reduce((acc, { month, kg, liters }) => {
-      const formattedMonth = month.toLocaleDateString('en-US', { month: 'long' }).toLowerCase();
-      acc[formattedMonth] = {
-        kg: kg,
-        liters: liters,
+    const formattedResult = result.map(({ month, totalCollectionRecords }) => {
+      const formattedMonth = month.toLocaleDateString('en-US', { month: 'long' });
+      return {
+        month: formattedMonth,
+        totalTreatedAmount: Number(totalCollectionRecords),
       };
-      return acc;
-    }, {});
-
+    });
 
     return formattedResult;
   }

@@ -10,6 +10,7 @@ export class UsersService {
 
   constructor(@InjectRepository(User) private repo: Repository<User>,
               private readonly i18n: I18nRequestScopeService,
+
               ) {
   }
 

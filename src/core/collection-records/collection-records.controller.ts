@@ -43,8 +43,13 @@ export class CollectionRecordsController {
     return this.collectionRecordsService.remove(+id);
   }
 
-@Get('/average-amounts')
-  getAverageAmounts() {
-    return this.collectionRecordsService.getAvgByMonth()
+@Get('/average-amounts/:shipId')
+  getAverageAmounts(@Param('shipId') shipId: string) {
+    return this.collectionRecordsService.getSumByMonth(+shipId)
+  }
+
+  @Get('/total-treated-amount')
+  getTotalRecords() {
+    return this.collectionRecordsService.getTotalTreatedAmountByMonth()
   }
 }

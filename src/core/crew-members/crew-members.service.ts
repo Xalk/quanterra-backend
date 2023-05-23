@@ -13,7 +13,7 @@ export class CrewMembersService {
 
   constructor(@InjectRepository(CrewMember) private repo: Repository<CrewMember>,
               private readonly i18n: I18nRequestScopeService,
-              ) {
+  ) {
   }
 
 
@@ -26,28 +26,35 @@ export class CrewMembersService {
 
   findAll() {
 
-    return this.repo.find();
+    return this.repo.find({ relations: ['user', 'ship'], order: { id: 'DESC' } });
   }
 
   async findOne(id: number) {
     const crewMember = await this.repo.findOne({ where: { id }, relations: ['user', 'ship'] });
 
     if (!crewMember) {
-      const errorMessage = this.i18n.translate('error.CREW_MEMBER.NOT_FOUND' );
+      const errorMessage = this.i18n.translate('error.CREW_MEMBER.NOT_FOUND');
       throw new NotFoundException(errorMessage);
     }
     return crewMember;
   }
 
   async update(id: number, updateCrewMemberDto: UpdateCrewMemberDto) {
-    const crewMember = await this.findOne(id)
+    const crewMember = await this.findOne(id);
     Object.assign(crewMember, updateCrewMemberDto);
-    return this.repo.save(crewMember)
+    crewMember.ship = { id: updateCrewMemberDto.shipId } as Ship;
+    return this.repo.save(crewMember);
   }
 
   async remove(id: number) {
-    const crewMember = await this.findOne(id)
+    const crewMember = await this.findOne(id);
     return this.repo.remove(crewMember);
+  }
+
+  async removeFromShip(id: number) {
+    const crewMember = await this.findOne(id);
+    crewMember.ship = null;
+    return this.repo.save(crewMember);
   }
 
   async findByUserId(userId: number) {
@@ -55,13 +62,12 @@ export class CrewMembersService {
     const crewMember = await this.repo.findOne({ where: { user: { id: userId } }, relations: ['user'] });
 
     if (!crewMember) {
-      const errorMessage = this.i18n.translate('error.CREW_MEMBER.NOT_CREW_MEMBER' );
+      const errorMessage = this.i18n.translate('error.CREW_MEMBER.NOT_CREW_MEMBER');
       throw new NotFoundException(errorMessage);
     }
 
     return crewMember;
   }
-
 
 
 }

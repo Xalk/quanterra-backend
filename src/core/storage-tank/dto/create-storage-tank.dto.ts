@@ -13,6 +13,7 @@ export class CreateStorageTankDto {
 
   @ApiProperty()
   @IsNumber()
+  @IsOptional()
   occupancyPercentage: number;
 
   @ApiProperty()

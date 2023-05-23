@@ -27,7 +27,7 @@ export class StorageTankService {
   }
 
   findAll() {
-    return this.repo.find({ relations: ['ship', 'waste'] });
+    return this.repo.find({ relations: ['ship', 'waste', 'sensor'] });
   }
 
   async findOne(id: number) {
@@ -47,6 +47,7 @@ export class StorageTankService {
     const storageTank = await this.findOne(id);
     Object.assign(storageTank, updateStorageTankDto);
     storageTank.sensor = { id: updateStorageTankDto.sensorId } as Sensor;
+    storageTank.waste = { id: updateStorageTankDto.wasteId } as Waste;
     return this.repo.save(storageTank);
   }
 

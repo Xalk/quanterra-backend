@@ -24,7 +24,7 @@ export class StorageTankSubscriber implements EntitySubscriberInterface<StorageT
     if (occupancyPercentageGotUpdated) {
       const storageTankId = event.entity.id;
       const newOccupancyPercentage = event.entity.occupancyPercentage;
-      const oldOccupancyPercentage = event.databaseEntity.occupancyPercentage;
+      const oldOccupancyPercentage = event.databaseEntity?.occupancyPercentage;
 
       Logger.log(`Percentage changed from ${oldOccupancyPercentage} to ${newOccupancyPercentage}`, 'Occupancy Percentage Updated');
 

@@ -8,6 +8,7 @@ import { StorageTankModule } from '@/core/storage-tank/storage-tank.module';
 @Module({
   imports: [TypeOrmModule.forFeature([CollectionRecord]), StorageTankModule],
   controllers: [CollectionRecordsController],
-  providers: [CollectionRecordsService]
+  providers: [CollectionRecordsService],
+  exports: [CollectionRecordsService]
 })
 export class CollectionRecordsModule {}

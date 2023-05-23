@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateReportDto } from './dto/create-report.dto';
 import { Report } from '@/core/reports/entities/report.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -22,7 +22,21 @@ export class ReportsService {
     const total = await this.shipService.calcTotalCapacity(createReportDto.shipId);
     report.totalWasteCapacity = total;
 
-    return this.reportRepository.save(report);
+    const savedReport = await this.reportRepository.save(report);
+
+    return this.findOne(savedReport.id);
+  }
+
+  async findOne(id: number) {
+    const record = await this.reportRepository.findOne({
+      where: { id },
+      relations: { user: true, ship: { storageTanks: true } },
+    });
+
+    if (!record) {
+      throw new NotFoundException();
+    }
+    return record;
   }
 
   findAll() {

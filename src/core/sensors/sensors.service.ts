@@ -6,6 +6,7 @@ import { Sensor } from '@/core/sensors/entities/sensor.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { I18nRequestScopeService } from 'nestjs-i18n';
 import { StorageTankService } from '@/core/storage-tank/storage-tank.service';
+import { StorageTank } from '@/core/storage-tank/entities/storage-tank.entity';
 
 @Injectable()
 export class SensorsService {
@@ -19,6 +20,7 @@ export class SensorsService {
   create(createSensorDto: CreateSensorDto) {
     const sensor = this.sensorRepository.create(createSensorDto);
     sensor.connectionKey = (Math.random() + 1).toString(36).substring(6);
+    sensor.storageTank = { id: createSensorDto.storageTankId } as StorageTank;
     return this.sensorRepository.save(sensor);
   }
 

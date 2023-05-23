@@ -47,5 +47,10 @@ export class CrewMembersController {
     return this.crewMembersService.remove(+id);
   }
 
+  @Delete('from-ship/:id')
+  removeFromShip(@Param('id') id: string) {
+    return this.crewMembersService.removeFromShip(+id);
+  }
+
 
 }
