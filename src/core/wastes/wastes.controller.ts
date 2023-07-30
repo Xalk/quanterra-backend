@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { WastesService } from './wastes.service';
 import { CreateWasteDto } from './dto/create-waste.dto';
 import { UpdateWasteDto } from './dto/update-waste.dto';
@@ -14,8 +23,7 @@ import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 @UseGuards(JwtAuthGuard, RoleGuard)
 @Roles(Role.ADMIN)
 export class WastesController {
-  constructor(private readonly wastesService: WastesService) {
-  }
+  constructor(private readonly wastesService: WastesService) {}
 
   @Post()
   @ApiBody({ type: CreateWasteDto })
@@ -24,6 +32,7 @@ export class WastesController {
   }
 
   @Get()
+  @Roles(Role.ADMIN, Role.OPERATOR, Role.CREW_MEMBER)
   findAll() {
     return this.wastesService.findAll();
   }

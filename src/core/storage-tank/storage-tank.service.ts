@@ -11,11 +11,10 @@ import { I18nRequestScopeService } from 'nestjs-i18n';
 
 @Injectable()
 export class StorageTankService {
-
-  constructor(@InjectRepository(StorageTank) private repo: Repository<StorageTank>,
-  private readonly i18n: I18nRequestScopeService
-  ) {
-  }
+  constructor(
+    @InjectRepository(StorageTank) private repo: Repository<StorageTank>,
+    private readonly i18n: I18nRequestScopeService,
+  ) {}
 
   create(createStorageTankDto: CreateStorageTankDto) {
     const storageTank = this.repo.create(createStorageTankDto);
@@ -27,7 +26,10 @@ export class StorageTankService {
   }
 
   findAll() {
-    return this.repo.find({ relations: ['ship', 'waste', 'sensor'] });
+    return this.repo.find({
+      relations: ['ship', 'waste', 'sensor', 'collectionRecords'],
+      order: { id: 'DESC' },
+    });
   }
 
   async findOne(id: number) {
@@ -37,10 +39,10 @@ export class StorageTankService {
     });
 
     if (!storageTank) {
-      const errorMessage = this.i18n.translate('error.STORAGE_TANK.NOT_FOUND' );
+      const errorMessage = this.i18n.translate('error.STORAGE_TANK.NOT_FOUND');
       throw new NotFoundException(errorMessage);
     }
-    return storageTank
+    return storageTank;
   }
 
   async update(id: number, updateStorageTankDto: UpdateStorageTankDto) {
@@ -48,6 +50,7 @@ export class StorageTankService {
     Object.assign(storageTank, updateStorageTankDto);
     storageTank.sensor = { id: updateStorageTankDto.sensorId } as Sensor;
     storageTank.waste = { id: updateStorageTankDto.wasteId } as Waste;
+    storageTank.ship = { id: updateStorageTankDto.shipId } as Ship;
     return this.repo.save(storageTank);
   }
 
